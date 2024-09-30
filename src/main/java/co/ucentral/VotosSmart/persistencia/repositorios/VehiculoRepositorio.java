@@ -1,4 +1,8 @@
-package co.ucentral.VotosSmart.persistencia.repositoriois;
+package co.ucentral.VotosSmart.persistencia.repositorios;
 
-public interface VehiculoRepositorio {
+
+import co.ucentral.VotosSmart.persistencia.entidades.Vehiculo;
+import org.springframework.data.repository.CrudRepository;
+
+public interface VehiculoRepositorio extends CrudRepository<Vehiculo, Long> {
 }

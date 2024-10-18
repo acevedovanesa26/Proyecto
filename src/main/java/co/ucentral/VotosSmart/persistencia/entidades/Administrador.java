@@ -1,5 +1,6 @@
 package co.ucentral.VotosSmart.persistencia.entidades;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,20 +10,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+import javax.naming.Name;
 
 @Entity
-@Table(name = "administradores")
-@Getter
+@Table (name =  "Vehiculos")
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Administrador {
-
+public class Vehiculo {
     @Id
-    @Column(name = "username", nullable = false, unique = true)
-    private String username;
+    @Column (name= "veh_codigo")
+    public long codigo;
+    @Column (name= "veh_placa")
+    public String placa;
+    @Column (name= "veh_modelo")
+    public int modelo;
 
-    @Column(name = "password", nullable = false)
-    private String password;
+
 }

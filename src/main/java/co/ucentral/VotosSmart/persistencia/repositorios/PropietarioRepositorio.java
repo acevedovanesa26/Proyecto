@@ -7,3 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface PropietarioRepositorio extends CrudRepository<Propietario, Long> {
 }
+
+

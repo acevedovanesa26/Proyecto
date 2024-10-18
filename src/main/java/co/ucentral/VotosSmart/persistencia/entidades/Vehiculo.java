@@ -26,4 +26,6 @@ public class Vehiculo {
     public String placa;
     @Column (name= "veh_modelo")
     public int modelo;
+
+
 }

@@ -1,29 +1,25 @@
 package co.ucentral.VotosSmart.controladores;
 
 import co.ucentral.VotosSmart.persistencia.entidades.*;
-import co.ucentral.VotosSmart.servicios.AdministradorServicio;
-import co.ucentral.VotosSmart.servicios.CandidatoServicio;
-import co.ucentral.VotosSmart.servicios.EleccionServicio;
-import co.ucentral.VotosSmart.servicios.PDFServicio;
-import co.ucentral.VotosSmart.servicios.VotanteServicio;
-import co.ucentral.VotosSmart.servicios.VotoServicio;
+import co.ucentral.VotosSmart.servicios.*;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
 @Controller
-@RequestMapping("/")
+@RequestMapping("/admin")
 public class AdministradorControlador {
 
     private final AdministradorServicio administradorServicio;
@@ -33,169 +29,158 @@ public class AdministradorControlador {
     private final VotoServicio votoServicio;
     private final PDFServicio pdfServicio; // Servicio para generar PDFs
 
-    @GetMapping("/")
-    public String redireccionarInicio(HttpSession session) {
-        if (session.getAttribute("adminUsername") != null) {
-            return "redirect:/dashboard";
-        } else {
-            return "redirect:/login";
-        }
-    }
-
-
     // RQ-01: Inicio de Sesión del Administrador
-    @GetMapping("login")
+    @GetMapping("/login")
     public String mostrarLogin(Model model) {
         model.addAttribute("administrador", new Administrador());
-        return "login";
+        return "admin/login";
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public String procesarLogin(@ModelAttribute Administrador administrador, Model model, HttpSession session) {
         if (administradorServicio.validarCredenciales(administrador.getUsername(), administrador.getPassword())) {
             session.setAttribute("adminUsername", administrador.getUsername());
-            return "redirect:/dashboard";
+            return "redirect:/admin/dashboard";
         } else {
             model.addAttribute("error", "Credenciales inválidas. Inténtalo de nuevo.");
-            return "login";
+            return "admin/login";
         }
     }
 
-    @GetMapping("logout")
+    @GetMapping("/logout")
     public String cerrarSesion(HttpSession session) {
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:/admin/login";
     }
 
     // RQ-01: Cambiar Contraseña
-    @GetMapping("admin/cambiar-contraseña")
+    @GetMapping("/cambiar-contraseña")
     public String mostrarCambioContraseña(HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             model.addAttribute("administrador", new Administrador());
-            return "cambiarContraseña";
+            return "admin/cambiarContraseña";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
-    @PostMapping("admin/cambiar-contraseña")
+    @PostMapping("/cambiar-contraseña")
     public String cambiarContraseña(@RequestParam("nuevaContraseña") String nuevaContraseña,
                                     @RequestParam("confirmarContraseña") String confirmarContraseña,
                                     HttpSession session,
                                     Model model) {
         if (session.getAttribute("adminUsername") == null) {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
 
         if (!nuevaContraseña.equals(confirmarContraseña)) {
             model.addAttribute("error", "Las contraseñas no coinciden");
-            return "cambiarContraseña";
+            return "admin/cambiarContraseña";
         }
 
         String username = (String) session.getAttribute("adminUsername");
         administradorServicio.cambiarContraseña(username, nuevaContraseña);
         model.addAttribute("mensaje", "Contraseña actualizada exitosamente");
-        return "cambiarContraseña";
+        return "admin/cambiarContraseña";
     }
 
     // Dashboard Principal
-    @GetMapping("dashboard")
-    public String mostrarDashboard(HttpSession session, Model model) {
+    @GetMapping("/dashboard")
+    public String mostrarDashboard(HttpSession session) {
         if (session.getAttribute("adminUsername") != null) {
-            model.addAttribute("username", session.getAttribute("adminUsername"));
-            return "dashboard";
+            return "admin/dashboard";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
     // RQ-02: Crear Nueva Elección
-    @GetMapping("elecciones")
+    @GetMapping("/elecciones")
     public String listarElecciones(HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             List<Eleccion> elecciones = eleccionServicio.obtenerTodas();
             model.addAttribute("elecciones", elecciones);
-            return "elecciones";
+            return "admin/elecciones";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
-    @GetMapping("eleccion/nueva")
+    @GetMapping("/eleccion/nueva")
     public String mostrarFormularioNuevaEleccion(HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             model.addAttribute("eleccion", new Eleccion());
-            return "nuevaEleccion";
+            return "admin/nuevaEleccion";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
-    @PostMapping("eleccion/guardar")
+    @PostMapping("/eleccion/guardar")
     public String guardarEleccion(@ModelAttribute Eleccion eleccion, Model model) {
         if (eleccion.getMaxCandidatos() > 5) {
             model.addAttribute("error", "El máximo de candidatos no puede superar los cinco");
-            return "nuevaEleccion";
+            return "admin/nuevaEleccion";
         }
         eleccionServicio.guardar(eleccion);
-        return "redirect:/elecciones";
+        return "redirect:/admin/elecciones";
     }
 
     // RQ-03: Gestionar Candidatos
-    @GetMapping("eleccion/{id}/candidatos")
+    @GetMapping("/eleccion/{id}/candidatos")
     public String listarCandidatos(@PathVariable Long id, HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(id);
             if (eleccion == null) {
-                return "redirect:/elecciones";
+                return "redirect:/admin/elecciones";
             }
             List<Candidato> candidatos = candidatoServicio.obtenerPorEleccionId(id);
             model.addAttribute("candidatos", candidatos);
             model.addAttribute("eleccion", eleccion);
-            return "candidatos";
+            return "admin/candidatos";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
-    @GetMapping("eleccion/{id}/candidato/nuevo")
+    @GetMapping("/eleccion/{id}/candidato/nuevo")
     public String mostrarFormularioNuevoCandidato(@PathVariable Long id, HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(id);
             if (eleccion == null) {
-                return "redirect:/elecciones";
+                return "redirect:/admin/elecciones";
             }
             if (new Date().after(eleccion.getFechaInicio())) {
                 model.addAttribute("error", "No se pueden añadir candidatos después del inicio de la elección");
-                return "redirect:/eleccion/" + id + "/candidatos";
+                return "redirect:/admin/eleccion/" + id + "/candidatos";
             }
             model.addAttribute("candidato", new Candidato());
             model.addAttribute("eleccion", eleccion);
-            return "nuevoCandidato";
+            return "admin/nuevoCandidato";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
-    @PostMapping("eleccion/{id}/candidato/guardar")
+    @PostMapping("/eleccion/{id}/candidato/guardar")
     public String guardarCandidato(@PathVariable Long id,
                                    @ModelAttribute Candidato candidato,
                                    @RequestParam("imagen") MultipartFile imagen,
                                    Model model) {
         Eleccion eleccion = eleccionServicio.obtenerPorId(id);
         if (eleccion == null) {
-            return "redirect:/elecciones";
+            return "redirect:/admin/elecciones";
         }
         if (new Date().after(eleccion.getFechaInicio())) {
             model.addAttribute("error", "No se pueden añadir candidatos después del inicio de la elección");
-            return "redirect:/eleccion/" + id + "/candidatos";
+            return "redirect:/admin/eleccion/" + id + "/candidatos";
         }
 
         // Verificar si se ha alcanzado el máximo de candidatos
         List<Candidato> candidatosExistentes = candidatoServicio.obtenerPorEleccionId(id);
         if (candidatosExistentes.size() >= eleccion.getMaxCandidatos()) {
             model.addAttribute("error", "Se ha alcanzado el número máximo de candidatos para esta elección");
-            return "redirect:/eleccion/" + id + "/candidatos";
+            return "redirect:/admin/eleccion/" + id + "/candidatos";
         }
 
         // Lógica para guardar la imagen (opcional)
@@ -205,12 +190,12 @@ public class AdministradorControlador {
                 candidato.setImagenUrl(imagenUrl);
             } catch (Exception e) {
                 model.addAttribute("error", "Error al guardar la imagen");
-                return "nuevoCandidato";
+                return "admin/nuevoCandidato";
             }
         }
         candidato.setEleccion(eleccion);
         candidatoServicio.guardar(candidato);
-        return "redirect:/eleccion/" + id + "/candidatos";
+        return "redirect:/admin/eleccion/" + id + "/candidatos";
     }
 
     // Método para guardar la imagen en el servidor
@@ -223,38 +208,38 @@ public class AdministradorControlador {
     }
 
     // RQ-03: Editar y Eliminar Candidatos
-    @GetMapping("eleccion/{idEleccion}/candidato/editar/{idCandidato}")
+    @GetMapping("/eleccion/{idEleccion}/candidato/editar/{idCandidato}")
     public String mostrarFormularioEditarCandidato(@PathVariable Long idEleccion, @PathVariable Long idCandidato, HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(idEleccion);
             Candidato candidato = candidatoServicio.obtenerPorId(idCandidato);
             if (eleccion == null || candidato == null) {
-                return "redirect:/elecciones";
+                return "redirect:/admin/elecciones";
             }
             if (new Date().after(eleccion.getFechaInicio())) {
                 model.addAttribute("error", "No se pueden editar candidatos después del inicio de la elección");
-                return "redirect:/eleccion/" + idEleccion + "/candidatos";
+                return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
             }
             model.addAttribute("candidato", candidato);
             model.addAttribute("eleccion", eleccion);
-            return "editarCandidato";
+            return "admin/editarCandidato";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
-    @PostMapping("eleccion/{idEleccion}/candidato/actualizar")
+    @PostMapping("/eleccion/{idEleccion}/candidato/actualizar")
     public String actualizarCandidato(@PathVariable Long idEleccion,
                                       @ModelAttribute Candidato candidato,
                                       @RequestParam("imagen") MultipartFile imagen,
                                       Model model) {
         Eleccion eleccion = eleccionServicio.obtenerPorId(idEleccion);
         if (eleccion == null) {
-            return "redirect:/elecciones";
+            return "redirect:/admin/elecciones";
         }
         if (new Date().after(eleccion.getFechaInicio())) {
             model.addAttribute("error", "No se pueden editar candidatos después del inicio de la elección");
-            return "redirect:/eleccion/" + idEleccion + "/candidatos";
+            return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
         }
 
         // Lógica para actualizar la imagen si se proporciona una nueva
@@ -264,40 +249,40 @@ public class AdministradorControlador {
                 candidato.setImagenUrl(imagenUrl);
             } catch (Exception e) {
                 model.addAttribute("error", "Error al actualizar la imagen");
-                return "editarCandidato";
+                return "admin/editarCandidato";
             }
         }
         candidato.setEleccion(eleccion);
         candidatoServicio.guardar(candidato);
-        return "redirect:/eleccion/" + idEleccion + "/candidatos";
+        return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
     }
 
-    @GetMapping("eleccion/{idEleccion}/candidato/eliminar/{idCandidato}")
+    @GetMapping("/eleccion/{idEleccion}/candidato/eliminar/{idCandidato}")
     public String eliminarCandidato(@PathVariable Long idEleccion, @PathVariable Long idCandidato, HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(idEleccion);
             Candidato candidato = candidatoServicio.obtenerPorId(idCandidato);
             if (eleccion == null || candidato == null) {
-                return "redirect:/elecciones";
+                return "redirect:/admin/elecciones";
             }
             if (new Date().after(eleccion.getFechaInicio())) {
                 model.addAttribute("error", "No se pueden eliminar candidatos después del inicio de la elección");
-                return "redirect:/eleccion/" + idEleccion + "/candidatos";
+                return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
             }
             candidatoServicio.borrar(candidato);
-            return "redirect:/eleccion/" + idEleccion + "/candidatos";
+            return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
     // RQ-06: Visualizar Resultados en Tiempo Real
-    @GetMapping("eleccion/{id}/resultados")
+    @GetMapping("/eleccion/{id}/resultados")
     public String verResultados(@PathVariable Long id, HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(id);
             if (eleccion == null) {
-                return "redirect:/elecciones";
+                return "redirect:/admin/elecciones";
             }
             List<Candidato> candidatos = candidatoServicio.obtenerPorEleccionId(id);
             // Obtener votos por candidato
@@ -307,14 +292,14 @@ public class AdministradorControlador {
             }
             model.addAttribute("eleccion", eleccion);
             model.addAttribute("candidatos", candidatos);
-            return "resultados";
+            return "admin/resultados";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 
     // RQ-07: Exportar Resultados en PDF
-    @GetMapping("eleccion/{id}/exportar")
+    @GetMapping("/eleccion/{id}/exportar")
     public ResponseEntity<InputStreamResource> exportarResultados(@PathVariable Long id, HttpSession session) {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(id);
@@ -334,15 +319,15 @@ public class AdministradorControlador {
         }
     }
 
-    // RQ-04 y RQ-05: Gestión de Votantes
-    @GetMapping("votantes")
+    // RQ-04 y RQ-05: Gestión de Votantes (Opcional si es necesario desde el lado del administrador)
+    @GetMapping("/votantes")
     public String listarVotantes(HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             List<Votante> votantes = votanteServicio.obtenerTodos();
             model.addAttribute("votantes", votantes);
-            return "votantes";
+            return "admin/votantes";
         } else {
-            return "redirect:/login";
+            return "redirect:/admin/login";
         }
     }
 

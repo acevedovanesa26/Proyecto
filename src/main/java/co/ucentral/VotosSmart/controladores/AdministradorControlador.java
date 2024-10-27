@@ -1,9 +1,15 @@
 package co.ucentral.VotosSmart.controladores;
 
 import co.ucentral.VotosSmart.persistencia.entidades.*;
-import co.ucentral.VotosSmart.servicios.*;
+import co.ucentral.VotosSmart.servicios.AdministradorServicio;
+import co.ucentral.VotosSmart.servicios.CandidatoServicio;
+import co.ucentral.VotosSmart.servicios.EleccionServicio;
+import co.ucentral.VotosSmart.servicios.PDFServicio;
+import co.ucentral.VotosSmart.servicios.VotanteServicio;
+import co.ucentral.VotosSmart.servicios.VotoServicio;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import jakarta.servlet.http.HttpSession;
 import java.io.ByteArrayInputStream;
@@ -18,8 +25,9 @@ import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
+@EnableJdbcRepositories
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("login")
 public class AdministradorControlador {
 
     private final AdministradorServicio administradorServicio;
@@ -29,38 +37,40 @@ public class AdministradorControlador {
     private final VotoServicio votoServicio;
     private final PDFServicio pdfServicio; // Servicio para generar PDFs
 
+
+
     // RQ-01: Inicio de Sesión del Administrador
-    @GetMapping("/login")
+    @GetMapping("login")
     public String mostrarLogin(Model model) {
         model.addAttribute("administrador", new Administrador());
-        return "admin/login";
+        return "login";
     }
 
-    @PostMapping("/login")
-    public String procesarLogin(@ModelAttribute Administrador administrador, Model model, HttpSession session) {
+    @PostMapping("login")
+    public String mostrarLogin(@ModelAttribute Administrador administrador, Model model, HttpSession session) {
         if (administradorServicio.validarCredenciales(administrador.getUsername(), administrador.getPassword())) {
             session.setAttribute("adminUsername", administrador.getUsername());
-            return "redirect:/admin/dashboard";
+            return "dashboard";
         } else {
             model.addAttribute("error", "Credenciales inválidas. Inténtalo de nuevo.");
-            return "admin/login";
+            return "login";
         }
     }
 
     @GetMapping("/logout")
     public String cerrarSesion(HttpSession session) {
         session.invalidate();
-        return "redirect:/admin/login";
+        return "login";
     }
 
     // RQ-01: Cambiar Contraseña
-    @GetMapping("/cambiar-contraseña")
+    @GetMapping("admin/cambiar-contraseña")
     public String mostrarCambioContraseña(HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             model.addAttribute("administrador", new Administrador());
-            return "admin/cambiarContraseña";
+            return "cambiarContraseña";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -70,27 +80,27 @@ public class AdministradorControlador {
                                     HttpSession session,
                                     Model model) {
         if (session.getAttribute("adminUsername") == null) {
-            return "redirect:/admin/login";
+            return "login";
         }
 
         if (!nuevaContraseña.equals(confirmarContraseña)) {
             model.addAttribute("error", "Las contraseñas no coinciden");
-            return "admin/cambiarContraseña";
+            return "cambiarContraseña";
         }
 
         String username = (String) session.getAttribute("adminUsername");
         administradorServicio.cambiarContraseña(username, nuevaContraseña);
         model.addAttribute("mensaje", "Contraseña actualizada exitosamente");
-        return "admin/cambiarContraseña";
+        return "cambiarContraseña";
     }
 
     // Dashboard Principal
     @GetMapping("/dashboard")
     public String mostrarDashboard(HttpSession session) {
         if (session.getAttribute("adminUsername") != null) {
-            return "admin/dashboard";
+            return "dashboard";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -100,9 +110,9 @@ public class AdministradorControlador {
         if (session.getAttribute("adminUsername") != null) {
             List<Eleccion> elecciones = eleccionServicio.obtenerTodas();
             model.addAttribute("elecciones", elecciones);
-            return "admin/elecciones";
+            return "elecciones";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -110,9 +120,9 @@ public class AdministradorControlador {
     public String mostrarFormularioNuevaEleccion(HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             model.addAttribute("eleccion", new Eleccion());
-            return "admin/nuevaEleccion";
+            return "nuevaEleccion";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -120,10 +130,10 @@ public class AdministradorControlador {
     public String guardarEleccion(@ModelAttribute Eleccion eleccion, Model model) {
         if (eleccion.getMaxCandidatos() > 5) {
             model.addAttribute("error", "El máximo de candidatos no puede superar los cinco");
-            return "admin/nuevaEleccion";
+            return "nuevaEleccion";
         }
         eleccionServicio.guardar(eleccion);
-        return "redirect:/admin/elecciones";
+        return "elecciones";
     }
 
     // RQ-03: Gestionar Candidatos
@@ -132,14 +142,14 @@ public class AdministradorControlador {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(id);
             if (eleccion == null) {
-                return "redirect:/admin/elecciones";
+                return "elecciones";
             }
             List<Candidato> candidatos = candidatoServicio.obtenerPorEleccionId(id);
             model.addAttribute("candidatos", candidatos);
             model.addAttribute("eleccion", eleccion);
-            return "admin/candidatos";
+            return "candidatos";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -148,17 +158,17 @@ public class AdministradorControlador {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(id);
             if (eleccion == null) {
-                return "redirect:/admin/elecciones";
+                return "elecciones";
             }
             if (new Date().after(eleccion.getFechaInicio())) {
                 model.addAttribute("error", "No se pueden añadir candidatos después del inicio de la elección");
-                return "redirect:/admin/eleccion/" + id + "/candidatos";
+                return "eleccion/"+ id + "/candidatos";
             }
             model.addAttribute("candidato", new Candidato());
             model.addAttribute("eleccion", eleccion);
-            return "admin/nuevoCandidato";
+            return "nuevoCandidato";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -169,18 +179,18 @@ public class AdministradorControlador {
                                    Model model) {
         Eleccion eleccion = eleccionServicio.obtenerPorId(id);
         if (eleccion == null) {
-            return "redirect:/admin/elecciones";
+            return "elecciones";
         }
         if (new Date().after(eleccion.getFechaInicio())) {
             model.addAttribute("error", "No se pueden añadir candidatos después del inicio de la elección");
-            return "redirect:/admin/eleccion/" + id + "/candidatos";
+            return "eleccion/"+ id + "/candidatos";
         }
 
         // Verificar si se ha alcanzado el máximo de candidatos
         List<Candidato> candidatosExistentes = candidatoServicio.obtenerPorEleccionId(id);
         if (candidatosExistentes.size() >= eleccion.getMaxCandidatos()) {
             model.addAttribute("error", "Se ha alcanzado el número máximo de candidatos para esta elección");
-            return "redirect:/admin/eleccion/" + id + "/candidatos";
+            return "eleccion/"+ id + "/candidatos";
         }
 
         // Lógica para guardar la imagen (opcional)
@@ -190,19 +200,19 @@ public class AdministradorControlador {
                 candidato.setImagenUrl(imagenUrl);
             } catch (Exception e) {
                 model.addAttribute("error", "Error al guardar la imagen");
-                return "admin/nuevoCandidato";
+                return "nuevoCandidato";
             }
         }
         candidato.setEleccion(eleccion);
         candidatoServicio.guardar(candidato);
-        return "redirect:/admin/eleccion/" + id + "/candidatos";
+        return "eleccion/"+ id + "/candidatos";
     }
 
-    // Método para guardar la imagen en el servidor
+    // Métodoparaguardarla imagen en el servidor
     private String guardarImagen(MultipartFile imagen) throws Exception {
         // Implementa aquí la lógica para guardar la imagen y devolver la URL o ruta de acceso
         // Por simplicidad, supongamos que la imagen se guarda correctamente y devolvemos una URL ficticia
-        String imagenUrl = "/imagenes/" + imagen.getOriginalFilename();
+        String imagenUrl = "/imagenes/"+ imagen.getOriginalFilename();
         // Código para guardar la imagen en el directorio correspondiente
         return imagenUrl;
     }
@@ -214,17 +224,17 @@ public class AdministradorControlador {
             Eleccion eleccion = eleccionServicio.obtenerPorId(idEleccion);
             Candidato candidato = candidatoServicio.obtenerPorId(idCandidato);
             if (eleccion == null || candidato == null) {
-                return "redirect:/admin/elecciones";
+                return "elecciones";
             }
             if (new Date().after(eleccion.getFechaInicio())) {
                 model.addAttribute("error", "No se pueden editar candidatos después del inicio de la elección");
-                return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
+                return "eleccion/"+ idEleccion + "/candidatos";
             }
             model.addAttribute("candidato", candidato);
             model.addAttribute("eleccion", eleccion);
-            return "admin/editarCandidato";
+            return "editarCandidato";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -235,11 +245,11 @@ public class AdministradorControlador {
                                       Model model) {
         Eleccion eleccion = eleccionServicio.obtenerPorId(idEleccion);
         if (eleccion == null) {
-            return "redirect:/admin/elecciones";
+            return "elecciones";
         }
         if (new Date().after(eleccion.getFechaInicio())) {
             model.addAttribute("error", "No se pueden editar candidatos después del inicio de la elección");
-            return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
+            return "/admin/eleccion/"+ idEleccion + "/candidatos";
         }
 
         // Lógica para actualizar la imagen si se proporciona una nueva
@@ -249,12 +259,12 @@ public class AdministradorControlador {
                 candidato.setImagenUrl(imagenUrl);
             } catch (Exception e) {
                 model.addAttribute("error", "Error al actualizar la imagen");
-                return "admin/editarCandidato";
+                return "editarCandidato";
             }
         }
         candidato.setEleccion(eleccion);
         candidatoServicio.guardar(candidato);
-        return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
+        return "eleccion/"+ idEleccion + "/candidatos";
     }
 
     @GetMapping("/eleccion/{idEleccion}/candidato/eliminar/{idCandidato}")
@@ -263,16 +273,16 @@ public class AdministradorControlador {
             Eleccion eleccion = eleccionServicio.obtenerPorId(idEleccion);
             Candidato candidato = candidatoServicio.obtenerPorId(idCandidato);
             if (eleccion == null || candidato == null) {
-                return "redirect:/admin/elecciones";
+                return "elecciones";
             }
             if (new Date().after(eleccion.getFechaInicio())) {
                 model.addAttribute("error", "No se pueden eliminar candidatos después del inicio de la elección");
-                return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
+                return "eleccion/"+ idEleccion + "/candidatos";
             }
             candidatoServicio.borrar(candidato);
-            return "redirect:/admin/eleccion/" + idEleccion + "/candidatos";
+            return "eleccion/"+ idEleccion + "/candidatos";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -282,7 +292,7 @@ public class AdministradorControlador {
         if (session.getAttribute("adminUsername") != null) {
             Eleccion eleccion = eleccionServicio.obtenerPorId(id);
             if (eleccion == null) {
-                return "redirect:/admin/elecciones";
+                return "elecciones";
             }
             List<Candidato> candidatos = candidatoServicio.obtenerPorEleccionId(id);
             // Obtener votos por candidato
@@ -292,9 +302,9 @@ public class AdministradorControlador {
             }
             model.addAttribute("eleccion", eleccion);
             model.addAttribute("candidatos", candidatos);
-            return "admin/resultados";
+            return "resultados";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 
@@ -308,7 +318,7 @@ public class AdministradorControlador {
             }
             ByteArrayInputStream bis = pdfServicio.generarReporteResultados(eleccion);
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=resultados_eleccion_" + eleccion.getId() + ".pdf");
+            headers.add("Content-Disposition", "attachment; filename=resultados_eleccion_"+ eleccion.getId() + ".pdf");
             return ResponseEntity
                     .ok()
                     .headers(headers)
@@ -325,9 +335,9 @@ public class AdministradorControlador {
         if (session.getAttribute("adminUsername") != null) {
             List<Votante> votantes = votanteServicio.obtenerTodos();
             model.addAttribute("votantes", votantes);
-            return "admin/votantes";
+            return "votantes";
         } else {
-            return "redirect:/admin/login";
+            return "login";
         }
     }
 

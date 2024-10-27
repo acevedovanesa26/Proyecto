@@ -78,7 +78,7 @@
 <body>
 <div class="container">
   <h1>Cambiar Contraseña</h1>
-  <form th:action="@{/admin/cambiar-contraseña}" method="post">
+  <form th:action="@{cambiar-contraseña}" method="post">
     <div class="form-group">
       <label for="nuevaContraseña">Nueva Contraseña</label>
       <input type="password" id="nuevaContraseña" name="nuevaContraseña" required />
@@ -95,7 +95,7 @@
   <div th:if="${error}" class="error">
     <p th:text="${error}"></p>
   </div>
-  <a th:href="@{/admin/dashboard}">Volver al Dashboard</a>
+  <a th:href="@{dashboard}">Volver al Dashboard</a>
 </div>
 </body>
 </html>

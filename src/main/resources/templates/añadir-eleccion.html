@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>VOTO SMART - Crear Elección de Candidato</title>
+    <title>VOTO SMART - Crear Tipo de Elección</title>
     <!-- Fuentes de Google -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
@@ -80,7 +80,7 @@
             max-width: 700px;
         }
 
-        /* Formulario de Creación de Candidato */
+        /* Formulario de Creación de Tipo de Elección */
         .form-container {
             background-color: #ffffff;
             padding: 30px;
@@ -169,14 +169,26 @@
 
 <!-- Contenido principal -->
 <div class="main-content">
-    <h1>Crear Elección de Candidato</h1>
-    <p>Rellena el siguiente formulario para agregar un nuevo candidato a la elección.</p>
+    <h1>Crear Elección</h1>
+    <p>Rellena el siguiente formulario para crear una nueva elección.</p>
     <div class="form-container">
-        <form th:action="@{/crear-candidato}" method="post">
-            <input type="text" name="nombre" placeholder="Nombre del Candidato" required>
-            <input type="text" name="partido" placeholder="Partido" required>
-            <textarea name="descripcion" placeholder="Descripción" rows="4" required></textarea>
-            <button type="submit">Agregar Candidato</button>
+        <form th:action="@{/eleccion/guardar}" method="post">
+            <input type="text" name="nombre" placeholder="Nombre de la Elección" required>
+            <div style="text-align: left;">
+                <label for="fecha_inicio">Fecha de Inicio de Elección</label>
+                <input type="date" id="fecha_inicio" name="fecha_inicio" required>
+            </div>
+            <div style="text-align: left;">
+                <label for="fecha_fin">Fecha de Fin de Elección</label>
+                <input type="date" id="fecha_fin" name="fecha_fin" required>
+            </div>
+            <textarea name="descripcion" placeholder="Descripción/Propuestas" rows="4" required></textarea>
+            <div class="button-container">
+                <button type="submit" class="btn">
+                    <i class="fas fa-calendar-alt"></i>
+                    Crear Elección
+                </button>
+            </div>
         </form>
     </div>
 </div>

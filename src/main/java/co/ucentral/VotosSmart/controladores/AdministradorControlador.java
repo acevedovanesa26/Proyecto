@@ -72,7 +72,7 @@ public class AdministradorControlador {
     public String mostrarCambioContraseña(HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             model.addAttribute("administrador", new Administrador());
-            return "cambiarContraseña";
+            return "cambiar-contraseña";
         } else {
             return "redirect:/login";
         }
@@ -89,13 +89,13 @@ public class AdministradorControlador {
 
         if (!nuevaContraseña.equals(confirmarContraseña)) {
             model.addAttribute("error", "Las contraseñas no coinciden");
-            return "cambiarContraseña";
+            return "cambiar-contraseña";
         }
 
         String username = (String) session.getAttribute("adminUsername");
         administradorServicio.cambiarContraseña(username, nuevaContraseña);
         model.addAttribute("mensaje", "Contraseña actualizada exitosamente");
-        return "cambiarContraseña";
+        return "cambiar-contraseña";
     }
 
     // Dashboard Principal
@@ -215,10 +215,9 @@ public class AdministradorControlador {
 
     // Método para guardar la imagen en el servidor
     private String guardarImagen(MultipartFile imagen) throws Exception {
-        // Implementa aquí la lógica para guardar la imagen y devolver la URL o ruta de acceso
-        // Por simplicidad, supongamos que la imagen se guarda correctamente y devolvemos una URL ficticia
+        //pen logica imagen
         String imagenUrl = "/imagenes/" + imagen.getOriginalFilename();
-        // Código para guardar la imagen en el directorio correspondiente
+        // Código para guardar la imagen
         return imagenUrl;
     }
 
@@ -257,7 +256,7 @@ public class AdministradorControlador {
             return "redirect:/eleccion/" + idEleccion + "/candidatos";
         }
 
-        // Lógica para actualizar la imagen si se proporciona una nueva
+        // Logica para actualizar la imagen si se proporciona una nueva
         if (!imagen.isEmpty()) {
             try {
                 String imagenUrl = guardarImagen(imagen);

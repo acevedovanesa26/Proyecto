@@ -3,99 +3,232 @@
 <head>
   <meta charset="UTF-8">
   <title>VOTO SMART - Cambiar Contraseña</title>
-  <!-- Fuente de Google Fonts -->
+  <!-- Fuentes de Google -->
   <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Estilos CSS Integrados -->
   <style>
-    /* Tus estilos CSS aquí */
+    /* Estilos Generales */
     body {
       font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
       background-color: #f0f4f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      color: #333333;
+      box-sizing: border-box;
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 60px; /* Altura del footer */
     }
 
-    .container {
+    /* Barra de Navegación Superior */
+    .navbar {
+      background-color: #00796b;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .navbar .navbar-brand {
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ffffff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 16px;
+      transition: color 0.3s;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar .nav-links a i {
+      margin-right: 5px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #d1e7dd;
+    }
+
+    /* Contenido Principal */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    .main-content h1 {
+      color: #00796b;
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .form-container {
       background-color: #ffffff;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 6px 12px rgba(0,0,0,0.1);
       width: 100%;
       max-width: 400px;
-      text-align: center;
-    }
-
-    h1 {
-      color: #00796b;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
       text-align: left;
     }
 
-    label {
-      display: block;
-      margin-bottom: 5px;
-      color: #555;
+    .form-group {
+      margin-bottom: 20px;
     }
 
-    input[type="password"] {
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .form-group input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ccc;
       border-radius: 5px;
+      font-size: 16px;
     }
 
-    .btn {
+    .form-group input:focus {
+      border-color: #00796b;
+      outline: none;
+      box-shadow: 0 0 5px rgba(0, 121, 107, 0.5);
+    }
+
+    .btn-submit {
       width: 100%;
-      padding: 10px;
+      padding: 15px;
       background-color: #00796b;
       color: #ffffff;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
+      font-size: 18px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .btn:hover {
+    .btn-submit i {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+
+    .btn-submit:hover {
       background-color: #005a4d;
+      transform: translateY(-2px);
+    }
+
+    .mensaje, .error {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
     }
 
     .mensaje {
-      margin-top: 15px;
       color: green;
     }
 
     .error {
-      margin-top: 15px;
       color: red;
+    }
+
+    /* Pie de Página Fijo */
+    .footer {
+      background-color: #00796b;
+      color: #ffffff;
+      text-align: center;
+      padding: 15px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar .nav-links {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .navbar .nav-links a {
+        margin: 10px 0;
+      }
+
+      .main-content {
+        padding: 30px 20px;
+      }
+
+      .form-container {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-<div class="container">
+<!-- Barra de navegación superior -->
+<nav class="navbar">
+  <div class="logo">
+    <a href="#" class="navbar-brand">VOTO SMART</a>
+  </div>
+  <div class="nav-links">
+    <a th:href="@{/dashboard}"><i class="fas fa-home"></i> Inicio</a>
+    <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+  </div>
+</nav>
+
+<!-- Contenido principal -->
+<div class="main-content">
   <h1>Cambiar Contraseña</h1>
-  <form th:action="@{cambiar-contraseña}" method="post">
-    <div class="form-group">
-      <label for="nuevaContraseña">Nueva Contraseña</label>
-      <input type="password" id="nuevaContraseña" name="nuevaContraseña" required />
+  <div class="form-container">
+    <form th:action="@{/cambiar-contraseña}" method="post">
+      <div class="form-group">
+        <label for="nuevaContraseña">Nueva Contraseña</label>
+        <input type="password" id="nuevaContraseña" name="nuevaContraseña" required />
+      </div>
+      <div class="form-group">
+        <label for="confirmarContraseña">Confirmar Contraseña</label>
+        <input type="password" id="confirmarContraseña" name="confirmarContraseña" required />
+      </div>
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-key"></i>
+        Actualizar Contraseña
+      </button>
+    </form>
+    <!-- Mensajes de Éxito o Error -->
+    <div th:if="${mensaje}" class="mensaje">
+      <p th:text="${mensaje}"></p>
     </div>
-    <div class="form-group">
-      <label for="confirmarContraseña">Confirmar Contraseña</label>
-      <input type="password" id="confirmarContraseña" name="confirmarContraseña" required />
+    <div th:if="${error}" class="error">
+      <p th:text="${error}"></p>
     </div>
-    <button type="submit" class="btn">Actualizar Contraseña</button>
-  </form>
-  <div th:if="${mensaje}" class="mensaje">
-    <p th:text="${mensaje}"></p>
   </div>
-  <div th:if="${error}" class="error">
-    <p th:text="${error}"></p>
-  </div>
-  <a th:href="@{dashboard}">Volver al Dashboard</a>
 </div>
+
+<!-- Pie de página fijo -->
+<footer class="footer">
+  © 2024 VOTO SMART. Todos los derechos reservados.
+</footer>
 </body>
 </html>

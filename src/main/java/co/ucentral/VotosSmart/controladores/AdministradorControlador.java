@@ -222,10 +222,9 @@ public class AdministradorControlador {
 
     // Método para guardar la imagen en el servidor
     private String guardarImagen(MultipartFile imagen) throws Exception {
-        // Implementa aquí la lógica para guardar la imagen y devolver la URL o ruta de acceso
-        // Por simplicidad, supongamos que la imagen se guarda correctamente y devolvemos una URL ficticia
+        //pen logica imagen
         String imagenUrl = "/imagenes/" + imagen.getOriginalFilename();
-        // Código para guardar la imagen en el directorio correspondiente
+        // Código para guardar la imagen
         return imagenUrl;
     }
 
@@ -264,7 +263,7 @@ public class AdministradorControlador {
             return "redirect:/eleccion/" + idEleccion + "/candidatos";
         }
 
-        // Lógica para actualizar la imagen si se proporciona una nueva
+        // Logica para actualizar la imagen si se proporciona una nueva
         if (!imagen.isEmpty()) {
             try {
                 String imagenUrl = guardarImagen(imagen);

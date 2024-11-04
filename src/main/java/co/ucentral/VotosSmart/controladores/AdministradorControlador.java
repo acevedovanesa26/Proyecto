@@ -33,15 +33,22 @@ public class AdministradorControlador {
     private final VotoServicio votoServicio;
     private final PDFServicio pdfServicio; // Servicio para generar PDFs
 
+
+
     @GetMapping("/")
-    public String redireccionarInicio(HttpSession session) {
-        if (session.getAttribute("adminUsername") != null) {
-            return "redirect:/dashboard";
-        } else {
-            return "redirect:/login";
-        }
+    public String mostrarSeleccionUsuario() {
+        return "index"; // Retorna index.html en la carpeta templates
     }
 
+    // Si necesitas conservar este método, cambia su ruta
+    @GetMapping("/inicio")
+    public String redireccionarInicio(HttpSession session) {
+        if (session.getAttribute("adminUsername") != null) {
+            return "redirect:/login";
+        } else {
+            return "redirect:/index";
+        }
+    }
 
     // RQ-01: Inicio de Sesión del Administrador
     @GetMapping("login")
@@ -64,21 +71,21 @@ public class AdministradorControlador {
     @GetMapping("logout")
     public String cerrarSesion(HttpSession session) {
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:/";
     }
 
     // RQ-01: Cambiar Contraseña
-    @GetMapping("admin/cambiar-contraseña")
+    @GetMapping("cambiar-contraseña")
     public String mostrarCambioContraseña(HttpSession session, Model model) {
         if (session.getAttribute("adminUsername") != null) {
             model.addAttribute("administrador", new Administrador());
-            return "cambiarContraseña";
+            return "cambiar-contraseña";
         } else {
             return "redirect:/login";
         }
     }
 
-    @PostMapping("admin/cambiar-contraseña")
+    @PostMapping("cambiar-contraseña")
     public String cambiarContraseña(@RequestParam("nuevaContraseña") String nuevaContraseña,
                                     @RequestParam("confirmarContraseña") String confirmarContraseña,
                                     HttpSession session,
@@ -89,13 +96,13 @@ public class AdministradorControlador {
 
         if (!nuevaContraseña.equals(confirmarContraseña)) {
             model.addAttribute("error", "Las contraseñas no coinciden");
-            return "cambiarContraseña";
+            return "cambiar-contraseña";
         }
 
         String username = (String) session.getAttribute("adminUsername");
         administradorServicio.cambiarContraseña(username, nuevaContraseña);
         model.addAttribute("mensaje", "Contraseña actualizada exitosamente");
-        return "cambiarContraseña";
+        return "cambiar-contraseña";
     }
 
     // Dashboard Principal

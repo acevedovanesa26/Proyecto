@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>VOTO SMART - Selección de Usuario</title>
+    <!-- Fuentes de Google -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos CSS Integrados -->
+    <style>
+        /* Estilos Generales */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #00796b 0%, #00796b 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        /* Contenedor Principal */
+        .selection-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .selection-container h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #00796b;
+        }
+
+        .selection-container p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            color: #555555;
+        }
+
+        /* Botones de Selección */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .button-container a {
+            background-color: #00796b;
+            color: #ffffff;
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.3s;
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-container a i {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .button-container a:hover {
+            background-color: #005a4d;
+            transform: translateY(-2px);
+        }
+
+        /* Responsividad */
+        @media (max-width: 480px) {
+            .selection-container h1 {
+                font-size: 28px;
+            }
+
+            .button-container a {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="selection-container">
+    <h1>Bienvenido a VOTO SMART</h1>
+    <p>Por favor, selecciona tu tipo de usuario:</p>
+    <div class="button-container">
+        <a th:href="@{/login}" class="btn">
+            <i class="fas fa-user-shield"></i>
+            Administrador
+        </a>
+        <a th:href="@{/vlogin}" class="btn">
+            <i class="fas fa-user"></i>
+            Votante
+        </a>
+    </div>
+</div>
+</body>
+</html>

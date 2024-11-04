@@ -33,15 +33,22 @@ public class AdministradorControlador {
     private final VotoServicio votoServicio;
     private final PDFServicio pdfServicio; // Servicio para generar PDFs
 
+
+
     @GetMapping("/")
-    public String redireccionarInicio(HttpSession session) {
-        if (session.getAttribute("adminUsername") != null) {
-            return "redirect:/dashboard";
-        } else {
-            return "redirect:/login";
-        }
+    public String mostrarSeleccionUsuario() {
+        return "index"; // Retorna index.html en la carpeta templates
     }
 
+    // Si necesitas conservar este método, cambia su ruta
+    @GetMapping("/inicio")
+    public String redireccionarInicio(HttpSession session) {
+        if (session.getAttribute("adminUsername") != null) {
+            return "redirect:/login";
+        } else {
+            return "redirect:/index";
+        }
+    }
 
     // RQ-01: Inicio de Sesión del Administrador
     @GetMapping("login")

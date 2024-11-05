@@ -34,7 +34,6 @@ public class AdministradorControlador {
     private final PDFServicio pdfServicio; // Servicio para generar PDFs
 
 
-
     @GetMapping("/")
     public String mostrarSeleccionUsuario() {
         return "index"; // Retorna index.html en la carpeta templates
@@ -339,7 +338,11 @@ public class AdministradorControlador {
             return ResponseEntity.status(401).build();
         }
     }
-
+    @GetMapping("/votante/registro")
+    public String mostrarFormularioRegistroVotante(Model model) {
+        model.addAttribute("votante", new Votante());
+        return "registroVotante";
+    }
     // RQ-04 y RQ-05: Gestión de Votantes
     @GetMapping("votantes")
     public String listarVotantes(HttpSession session, Model model) {
@@ -362,17 +365,18 @@ public class AdministradorControlador {
         return "registroVotante";
     }
 
-    @PostMapping("registroVotante")
-    public String registrarVotante(@ModelAttribute Votante votante, Model model) {
-        Votante votanteExistente = votanteServicio.obtenerPorCodigoEstudiante(votante.getCodigoEstudiante());
-        if (votanteExistente != null) {
-            model.addAttribute("error", "Este código de estudiante ya está registrado.");
-            return "registroVotante";
+    @PostMapping("/votante/login")
+    public String iniciarSesionVotante(@RequestParam("codigoAleatorio") String codigoAleatorio, Model model, HttpSession session) {
+        Votante votante = votanteServicio.obtenerPorCodigoAleatorio(codigoAleatorio);
+        if (votante != null) {
+            session.setAttribute("votanteId", votante.getId());
+            return "redirect:/votacion"; // Cambia a la vista o página correcta
+        } else {
+            model.addAttribute("error", "Código aleatorio no válido.");
+            return "loginVotante";
         }
-        votanteServicio.registrarVotante(votante);
-        model.addAttribute("success", "Registro exitoso. Tu código aleatorio es: " + votante.getCodigoAleatorio());
-        return "loginVotante";
     }
+
 
     @GetMapping("loginVotante")
     public String mostrarLoginVotante(Model model) {
@@ -391,6 +395,8 @@ public class AdministradorControlador {
             return "loginVotante";
         }
     }
+
+
 
     @GetMapping("elecciones/votar/{id}")
     public String votarEnEleccion(@PathVariable Long id, HttpSession session, Model model) {

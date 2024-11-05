@@ -18,20 +18,15 @@ public class VotanteServicio {
         votante.setCodigoAleatorio(generarCodigoAleatorio());
         return votanteRepositorio.save(votante);
     }
-
-    public Votante obtenerPorCodigoEstudiante(String codigoEstudiante) {
-        return votanteRepositorio.findByCodigoEstudiante(codigoEstudiante);
-    }
-
     public Votante obtenerPorCodigoAleatorio(String codigoAleatorio) {
         return votanteRepositorio.findByCodigoAleatorio(codigoAleatorio);
     }
 
-    private String generarCodigoAleatorio() {
-        return UUID.randomUUID().toString();
-    }
-
     public List<Votante> obtenerTodos() {
         return (List<Votante>) votanteRepositorio.findAll();
+    }
+
+    private String generarCodigoAleatorio() {
+        return UUID.randomUUID().toString().substring(0, 8); // Genera un código de 8 caracteres
     }
 }

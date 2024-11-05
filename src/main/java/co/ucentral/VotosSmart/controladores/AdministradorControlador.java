@@ -352,5 +352,56 @@ public class AdministradorControlador {
         }
     }
 
-    // Otros métodos adicionales según sea necesario...
+    // Otros métodos
+
+    // Métodos de gestión de votantes
+
+    @GetMapping("registroVotante")
+    public String mostrarRegistroVotante(Model model) {
+        model.addAttribute("votante", new Votante());
+        return "registroVotante";
+    }
+
+    @PostMapping("registroVotante")
+    public String registrarVotante(@ModelAttribute Votante votante, Model model) {
+        Votante votanteExistente = votanteServicio.obtenerPorCodigoEstudiante(votante.getCodigoEstudiante());
+        if (votanteExistente != null) {
+            model.addAttribute("error", "Este código de estudiante ya está registrado.");
+            return "registroVotante";
+        }
+        votanteServicio.registrarVotante(votante);
+        model.addAttribute("success", "Registro exitoso. Tu código aleatorio es: " + votante.getCodigoAleatorio());
+        return "loginVotante";
+    }
+
+    @GetMapping("loginVotante")
+    public String mostrarLoginVotante(Model model) {
+        model.addAttribute("votante", new Votante());
+        return "loginVotante";
+    }
+
+    @PostMapping("loginVotante")
+    public String procesarLoginVotante(@RequestParam String codigoAleatorio, Model model, HttpSession session) {
+        Votante votante = votanteServicio.obtenerPorCodigoAleatorio(codigoAleatorio);
+        if (votante != null) {
+            session.setAttribute("votanteCodigo", votante.getCodigoAleatorio());
+            return "redirect:/elecciones";
+        } else {
+            model.addAttribute("error", "Código aleatorio inválido.");
+            return "loginVotante";
+        }
+    }
+
+    @GetMapping("elecciones/votar/{id}")
+    public String votarEnEleccion(@PathVariable Long id, HttpSession session, Model model) {
+        if (session.getAttribute("votanteCodigo") != null) {
+            Eleccion eleccion = eleccionServicio.obtenerPorId(id);
+            List<Candidato> candidatos = candidatoServicio.obtenerPorEleccionId(id);
+            model.addAttribute("eleccion", eleccion);
+            model.addAttribute("candidatos", candidatos);
+            return "votar";
+        } else {
+            return "redirect:/loginVotante";
+        }
+    }
 }

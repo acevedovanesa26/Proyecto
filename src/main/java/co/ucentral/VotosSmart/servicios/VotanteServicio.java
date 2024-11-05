@@ -23,11 +23,15 @@ public class VotanteServicio {
         return votanteRepositorio.findByCodigoEstudiante(codigoEstudiante);
     }
 
-    public List<Votante> obtenerTodos() {
-        return (List<Votante>) votanteRepositorio.findAll();
+    public Votante obtenerPorCodigoAleatorio(String codigoAleatorio) {
+        return votanteRepositorio.findByCodigoAleatorio(codigoAleatorio);
     }
 
     private String generarCodigoAleatorio() {
         return UUID.randomUUID().toString();
+    }
+
+    public List<Votante> obtenerTodos() {
+        return (List<Votante>) votanteRepositorio.findAll();
     }
 }

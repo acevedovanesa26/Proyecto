@@ -5,4 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface VotanteRepositorio extends CrudRepository<Votante, Long> {
     Votante findByCodigoEstudiante(String codigoEstudiante);
+    Votante findByCodigoAleatorio(String codigoAleatorio);
 }

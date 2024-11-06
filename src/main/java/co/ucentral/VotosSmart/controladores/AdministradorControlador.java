@@ -29,7 +29,6 @@ public class AdministradorControlador {
     private final AdministradorServicio administradorServicio;
     private final EleccionServicio eleccionServicio;
     private final CandidatoServicio candidatoServicio;
-    private final VotanteServicio votanteServicio;
     private final VotoServicio votoServicio;
     private final PDFServicio pdfServicio; // Servicio para generar PDFs
 
@@ -338,76 +337,5 @@ public class AdministradorControlador {
             return ResponseEntity.status(401).build();
         }
     }
-    @GetMapping("/votante/registro")
-    public String mostrarFormularioRegistroVotante(Model model) {
-        model.addAttribute("votante", new Votante());
-        return "registroVotante";
-    }
-    // RQ-04 y RQ-05: Gestión de Votantes
-    @GetMapping("votantes")
-    public String listarVotantes(HttpSession session, Model model) {
-        if (session.getAttribute("adminUsername") != null) {
-            List<Votante> votantes = votanteServicio.obtenerTodos();
-            model.addAttribute("votantes", votantes);
-            return "votantes";
-        } else {
-            return "redirect:/login";
-        }
-    }
 
-    // Otros métodos
-
-    // Métodos de gestión de votantes
-
-    @GetMapping("registroVotante")
-    public String mostrarRegistroVotante(Model model) {
-        model.addAttribute("votante", new Votante());
-        return "registroVotante";
-    }
-
-    @PostMapping("/votante/login")
-    public String iniciarSesionVotante(@RequestParam("codigoAleatorio") String codigoAleatorio, Model model, HttpSession session) {
-        Votante votante = votanteServicio.obtenerPorCodigoAleatorio(codigoAleatorio);
-        if (votante != null) {
-            session.setAttribute("votanteId", votante.getId());
-            return "redirect:/votacion"; // Cambia a la vista o página correcta
-        } else {
-            model.addAttribute("error", "Código aleatorio no válido.");
-            return "loginVotante";
-        }
-    }
-
-
-    @GetMapping("loginVotante")
-    public String mostrarLoginVotante(Model model) {
-        model.addAttribute("votante", new Votante());
-        return "loginVotante";
-    }
-
-    @PostMapping("loginVotante")
-    public String procesarLoginVotante(@RequestParam String codigoAleatorio, Model model, HttpSession session) {
-        Votante votante = votanteServicio.obtenerPorCodigoAleatorio(codigoAleatorio);
-        if (votante != null) {
-            session.setAttribute("votanteCodigo", votante.getCodigoAleatorio());
-            return "redirect:/elecciones";
-        } else {
-            model.addAttribute("error", "Código aleatorio inválido.");
-            return "loginVotante";
-        }
-    }
-
-
-
-    @GetMapping("elecciones/votar/{id}")
-    public String votarEnEleccion(@PathVariable Long id, HttpSession session, Model model) {
-        if (session.getAttribute("votanteCodigo") != null) {
-            Eleccion eleccion = eleccionServicio.obtenerPorId(id);
-            List<Candidato> candidatos = candidatoServicio.obtenerPorEleccionId(id);
-            model.addAttribute("eleccion", eleccion);
-            model.addAttribute("candidatos", candidatos);
-            return "votar";
-        } else {
-            return "redirect:/loginVotante";
-        }
-    }
 }

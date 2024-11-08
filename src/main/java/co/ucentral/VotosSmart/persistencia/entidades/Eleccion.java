@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "elecciones")
@@ -21,14 +22,16 @@ public class Eleccion {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
-    @Column(name = "descripcion", nullable = false, length = 500)  // Nuevo campo de descripción
+    @Column(name = "descripcion", nullable = false)
     private String descripcion;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm") // Para recibir correctamente datetime-local
     @Column(name = "fecha_inicio", nullable = false)
     private Date fechaInicio;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     @Column(name = "fecha_fin", nullable = false)
     private Date fechaFin;
 

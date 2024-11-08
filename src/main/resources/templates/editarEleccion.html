@@ -43,7 +43,7 @@
 
         input[type="text"], input[type="datetime-local"], input[type="number"], textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 20px;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -51,22 +51,35 @@
             box-sizing: border-box;
         }
 
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
         button, a {
             padding: 12px 20px;
             background-color: #00796b;
             color: #ffffff;
-            border-radius: 10px;
+            border-radius: 8px;
             text-decoration: none;
             font-size: 1em;
-            margin: 10px 5px 0;
-            transition: background-color 0.3s, box-shadow 0.3s;
+            transition: background-color 0.3s;
             cursor: pointer;
-            display: inline-block;
+            border: none;
         }
 
         button:hover, a:hover {
             background-color: #005a4d;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-cancel {
+            background-color: #b0bec5;
+        }
+
+        .btn-cancel:hover {
+            background-color: #8a9ca6;
         }
 
         .error-message {
@@ -98,8 +111,10 @@
         <label for="maxCandidatos">Máximo de Candidatos:</label>
         <input type="number" th:field="*{maxCandidatos}" id="maxCandidatos" min="1" max="5" required/>
 
-        <button type="submit">Guardar Cambios</button>
-        <a href="/eleccion/listar">Cancelar</a>
+        <div class="button-container">
+            <button type="submit">Guardar Cambios</button>
+            <a href="/eleccion/listar" class="btn-cancel">Cancelar</a>
+        </div>
     </form>
 
     <div th:if="${error}" class="error-message">

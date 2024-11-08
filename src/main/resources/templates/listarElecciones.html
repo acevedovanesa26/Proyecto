@@ -73,10 +73,10 @@
             border-radius: 10px;
             text-decoration: none;
             font-size: 1em;
-            margin: 5px;
+            margin: 0 5px;
             transition: background-color 0.3s, box-shadow 0.3s, transform 0.2s;
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-            display: inline-block;
+            display: inline-block; /* Ajuste para que queden en línea */
         }
 
         .btn:hover {
@@ -149,6 +149,7 @@
             <th>Fecha Inicio</th>
             <th>Fecha Fin</th>
             <th>Máximo de Candidatos</th>
+            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -157,9 +158,7 @@
             <td th:text="${#dates.format(eleccion.fechaInicio, 'dd/MM/yyyy HH:mm')}"></td>
             <td th:text="${#dates.format(eleccion.fechaFin, 'dd/MM/yyyy HH:mm')}"></td>
             <td th:text="${eleccion.maxCandidatos}"></td>
-        </tr>
-        <tr>
-            <td colspan="4">
+            <td>
                 <a th:href="@{/eleccion/editar/{id}(id=${eleccion.id})}" class="btn">Editar</a>
                 <a th:href="@{/eleccion/eliminar/{id}(id=${eleccion.id})}" class="btn" onclick="return confirm('¿Estás seguro de eliminar esta elección?')">Eliminar</a>
             </td>

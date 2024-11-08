@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.Date;
 import java.util.List;
+
 @Entity
 @Table(name = "elecciones")
 @Getter
@@ -20,6 +21,9 @@ public class Eleccion {
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
+    @Column(name = "descripcion", nullable = false, length = 500)  // Nuevo campo de descripción
+    private String descripcion;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "fecha_inicio", nullable = false)
     private Date fechaInicio;
@@ -31,6 +35,6 @@ public class Eleccion {
     @Column(name = "max_candidatos", nullable = false)
     private int maxCandidatos;
 
-    @OneToMany(mappedBy = "eleccion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "eleccion", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Candidato> candidatos;
 }

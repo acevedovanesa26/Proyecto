@@ -4,33 +4,31 @@ import co.ucentral.VotosSmart.persistencia.entidades.Eleccion;
 import co.ucentral.VotosSmart.persistencia.repositorios.EleccionRepositorio;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import java.util.Date;
 import java.util.List;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 public class EleccionServicio {
 
     private final EleccionRepositorio eleccionRepositorio;
 
-    public List<Eleccion> obtenerTodas() {
-        return (List<Eleccion>) eleccionRepositorio.findAll();
+    public Eleccion guardar(Eleccion eleccion) {
+        if (eleccion.getId() != null && eleccion.getFechaInicio().before(new Date())) {
+            throw new IllegalStateException("No se puede editar la elección porque ya ha comenzado.");
+        }
+        return eleccionRepositorio.save(eleccion);
     }
 
-    public Eleccion guardar(Eleccion eleccion) {
-        return eleccionRepositorio.save(eleccion);
+    public List<Eleccion> obtenerTodas() {
+        return (List<Eleccion>) eleccionRepositorio.findAll();
     }
 
     public Eleccion obtenerPorId(Long id) {
         return eleccionRepositorio.findById(id).orElse(null);
     }
 
-    public boolean borrar(Eleccion eleccion) {
-        try {
-            eleccionRepositorio.delete(eleccion);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+    public void borrar(Eleccion eleccion) {
+        eleccionRepositorio.delete(eleccion);
     }
 }

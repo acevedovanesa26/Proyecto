@@ -116,47 +116,5 @@ public class AdministradorControlador {
 
 
 
-    // RQ-06: Visualizar Resultados en Tiempo Real
-    @GetMapping("eleccion/{id}/resultados")
-    public String verResultados(@PathVariable Long id, HttpSession session, Model model) {
-        if (session.getAttribute("adminUsername") != null) {
-            Eleccion eleccion = eleccionServicio.obtenerPorId(id);
-            if (eleccion == null) {
-                return "redirect:/elecciones";
-            }
-            List<Candidato> candidatos = candidatoServicio.obtenerPorEleccionId(id);
-            // Obtener votos por candidato
-            for (Candidato candidato : candidatos) {
-                Long votosCandidato = votoServicio.contarVotosPorCandidato(candidato.getId());
-                candidato.setNumeroVotos(votosCandidato);
-            }
-            model.addAttribute("eleccion", eleccion);
-            model.addAttribute("candidatos", candidatos);
-            return "resultados";
-        } else {
-            return "redirect:/login";
-        }
-    }
-
-    // RQ-07: Exportar Resultados en PDF
-    @GetMapping("eleccion/{id}/exportar")
-    public ResponseEntity<InputStreamResource> exportarResultados(@PathVariable Long id, HttpSession session) {
-        if (session.getAttribute("adminUsername") != null) {
-            Eleccion eleccion = eleccionServicio.obtenerPorId(id);
-            if (eleccion == null) {
-                return ResponseEntity.badRequest().build();
-            }
-            ByteArrayInputStream bis = pdfServicio.generarReporteResultados(eleccion);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Content-Disposition", "attachment; filename=resultados_eleccion_" + eleccion.getId() + ".pdf");
-            return ResponseEntity
-                    .ok()
-                    .headers(headers)
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .body(new InputStreamResource(bis));
-        } else {
-            return ResponseEntity.status(401).build();
-        }
-    }
 
 }

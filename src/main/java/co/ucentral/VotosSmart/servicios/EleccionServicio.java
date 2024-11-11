@@ -57,4 +57,10 @@ public class EleccionServicio {
     }
 
 
+    public List<Eleccion> obtenerEleccionesDisponibles() {
+        return eleccionRepositorio.findAll();
+    }
 }
+
+
+

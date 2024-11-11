@@ -116,8 +116,8 @@
     <div th:if="${error}" class="mensaje error" th:text="${error}"></div>
     <div th:if="${success}" class="mensaje success" th:text="${success}"></div>
 
-    <form th:action="@{/loginVotante.html}" method="post">
-        <div class="form-group">
+    <form th:action="@{/votante/login}" method="post">
+    <div class="form-group">
             <label for="codigoAleatorio">Código Aleatorio</label>
             <input type="text" id="codigoAleatorio" name="codigoAleatorio" placeholder="Ingresa tu código aleatorio" required>
         </div>

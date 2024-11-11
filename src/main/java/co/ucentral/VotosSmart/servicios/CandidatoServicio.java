@@ -77,4 +77,8 @@ public class CandidatoServicio {
                 .filter(e -> e.getFechaInicio().after(new Date()))
                 .collect(Collectors.toList());
     }
+
+    public List<Candidato> obtenerCandidatosPorEleccion(Long eleccionId) {
+        return candidatoRepositorio.findByEleccionId(eleccionId);
+    }
 }

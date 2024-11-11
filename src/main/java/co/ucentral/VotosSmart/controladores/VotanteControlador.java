@@ -39,11 +39,15 @@ public class VotanteControlador {
     }
     @PostMapping("/registro")
     public String registrarVotante(@ModelAttribute Votante votante, Model model) {
-        votanteServicio.registrarVotante(votante);
-        model.addAttribute("success", "Registro exitoso. Tu código es: " + votante.getCodigoAleatorio());
-        return "registroVotante";
+        try {
+            Votante registrado = votanteServicio.registrarVotante(votante);
+            model.addAttribute("success", "Registro exitoso. Tu código es: " + registrado.getCodigoAleatorio());
+            return "registroVotante";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al registrar el votante. Verifica los datos e inténtalo de nuevo.");
+            return "registroVotante";
+        }
     }
-
 
     @PostMapping("/login")
     public String iniciarSesionVotante(@RequestParam("codigoAleatorio") String codigoAleatorio, HttpSession session, Model model) {
@@ -57,11 +61,9 @@ public class VotanteControlador {
         }
     }
 
-    // Mostrar elecciones disponibles para el votante
     @GetMapping("/elecciones")
     public String mostrarEleccionesDisponibles(Model model) {
-        List<Eleccion> elecciones = eleccionServicio.obtenerEleccionesDisponibles();
-        model.addAttribute("elecciones", elecciones);
+        model.addAttribute("mensaje", "Redirigido correctamente a elecciones disponibles.");
         return "eleccionesDisponibles";
     }
 

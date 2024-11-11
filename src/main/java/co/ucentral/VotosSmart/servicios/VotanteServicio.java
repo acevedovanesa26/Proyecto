@@ -5,10 +5,10 @@ import co.ucentral.VotosSmart.persistencia.repositorios.VotanteRepositorio;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.UUID;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 public class VotanteServicio {
 
     private final VotanteRepositorio votanteRepositorio;
@@ -20,17 +20,17 @@ public class VotanteServicio {
         return votanteRepositorio.save(votante);
     }
 
+
     public Votante obtenerPorCodigoAleatorio(String codigoAleatorio) {
         return votanteRepositorio.findByCodigoAleatorio(codigoAleatorio);
     }
-
 
     private String generarCodigoAleatorio() {
         return String.valueOf((int)(Math.random() * 100000));
     }
 
 
-    public void emitirVoto(Long votanteId, Long candidatoId, Long eleccionId) {
+public void emitirVoto(Long votanteId, Long candidatoId, Long eleccionId) {
         Votante votante = votanteRepositorio.findById(votanteId).orElse(null);
         if (votante != null && !votante.getHaVotado()) {
             votante.setCandidatoVotadoId(candidatoId);

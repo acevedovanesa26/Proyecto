@@ -5,8 +5,10 @@ import co.ucentral.VotosSmart.persistencia.repositorios.EleccionRepositorio;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -38,11 +40,27 @@ public class EleccionServicio {
         return (List<Eleccion>) eleccionRepositorio.findAll();
     }
 
-    public Eleccion obtenerPorId(Long id) {
-        return eleccionRepositorio.findById(id).orElse(null);
-    }
+
 
     public void borrar(Eleccion eleccion) {
         eleccionRepositorio.delete(eleccion);
     }
+
+    public Eleccion obtenerPorId(Long id) {
+        return eleccionRepositorio.findById(id).orElse(null);
+    }
+
+    public List<Eleccion> obtenerEleccionesPendientes() {
+        return eleccionRepositorio.findAll().stream()
+                .filter(e -> e.getFechaInicio().after(new Date()))
+                .collect(Collectors.toList());
+    }
+
+
+    public List<Eleccion> obtenerEleccionesDisponibles() {
+        return eleccionRepositorio.findAll();
+    }
 }
+
+
+

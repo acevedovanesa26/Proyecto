@@ -14,77 +14,83 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @AllArgsConstructor
 @Controller
-@RequestMapping("/")
+@RequestMapping("/votante")
 public class VotanteControlador {
 
     private final VotanteServicio votanteServicio;
     private final EleccionServicio eleccionServicio;
     private final CandidatoServicio candidatoServicio;
 
-    @GetMapping("/votante/registro")
+
+
+    // Inicio de sesión del votante
+    @GetMapping("/login")
+    public String mostrarLoginVotante() {
+        return "loginVotante"; // Nombre de la vista de login para votante
+    }
+
+
+    @GetMapping("/registro")
     public String mostrarFormularioRegistroVotante(Model model) {
         model.addAttribute("votante", new Votante());
         return "registroVotante";
     }
-    // RQ-04 y RQ-05: Gestión de Votantes
-    @GetMapping("votantes")
-    public String listarVotantes(HttpSession session, Model model) {
-        if (session.getAttribute("adminUsername") != null) {
-            List<Votante> votantes = votanteServicio.obtenerTodos();
-            model.addAttribute("votantes", votantes);
-            return "votantes";
-        } else {
-            return "redirect:/login";
-        }
-    }
-
-    // Otros métodos
-
-    // Métodos de gestión de votantes
-
-    @GetMapping("registroVotante")
-    public String mostrarRegistroVotante(Model model) {
-        model.addAttribute("votante", new Votante());
+    @PostMapping("/registro")
+    public String registrarVotante(@ModelAttribute Votante votante, Model model) {
+        votanteServicio.registrarVotante(votante);
+        model.addAttribute("success", "Registro exitoso. Tu código es: " + votante.getCodigoAleatorio());
         return "registroVotante";
     }
 
-    @PostMapping("/votante/login")
-    public String iniciarSesionVotante(@RequestParam("codigoAleatorio") String codigoAleatorio, Model model, HttpSession session) {
+
+    @PostMapping("/login")
+    public String iniciarSesionVotante(@RequestParam("codigoAleatorio") String codigoAleatorio, HttpSession session, Model model) {
         Votante votante = votanteServicio.obtenerPorCodigoAleatorio(codigoAleatorio);
         if (votante != null) {
             session.setAttribute("votanteId", votante.getId());
-            return "redirect:/votacion"; // Cambia a la vista o página correcta
-        } else {
-            model.addAttribute("error", "Código aleatorio no válido.");
-            return "loginVotante";
-        }
-    }
-
-
-    @GetMapping("loginVotante")
-    public String mostrarLoginVotante(Model model) {
-        model.addAttribute("votante", new Votante());
-        return "loginVotante";
-    }
-
-    @PostMapping("loginVotante")
-    public String procesarLoginVotante(@RequestParam String codigoAleatorio, Model model, HttpSession session) {
-        Votante votante = votanteServicio.obtenerPorCodigoAleatorio(codigoAleatorio);
-        if (votante != null) {
-            session.setAttribute("votanteCodigo", votante.getCodigoAleatorio());
-            return "redirect:/elecciones";
+            return "redirect:/votante/elecciones";
         } else {
             model.addAttribute("error", "Código aleatorio inválido.");
             return "loginVotante";
         }
     }
 
-
-
-
+    // Mostrar elecciones disponibles para el votante
+    @GetMapping("/elecciones")
+    public String mostrarEleccionesDisponibles(Model model) {
+        List<Eleccion> elecciones = eleccionServicio.obtenerEleccionesDisponibles();
+        model.addAttribute("elecciones", elecciones);
+        return "eleccionesDisponibles";
     }
 
+    // Mostrar candidatos para votar en una elección específica
+    @GetMapping("/votar/{eleccionId}")
+    public String mostrarCandidatosParaVotar(@PathVariable Long eleccionId, Model model, HttpSession session) {
+        Long votanteId = (Long) session.getAttribute("votanteId");
+        if (votanteId != null) {
+            List<Candidato> candidatos = candidatoServicio.obtenerCandidatosPorEleccion(eleccionId);
+            model.addAttribute("candidatos", candidatos);
+            model.addAttribute("eleccionId", eleccionId);
+            return "candidatosParaVotar";
+        }
+        return "redirect:/votante/login";
+    }
 
+    // Emitir voto
+    @PostMapping("/emitirVoto")
+    public String emitirVoto(@RequestParam Long candidatoId, @RequestParam Long eleccionId, HttpSession session) {
+        Long votanteId = (Long) session.getAttribute("votanteId");
+        if (votanteId != null) {
+            votanteServicio.emitirVoto(votanteId, candidatoId, eleccionId);
+            return "redirect:/votante/confirmacion";
+        }
+        return "redirect:/votante/login";
+    }
+
+    @GetMapping("/confirmacion")
+    public String confirmacionVoto() {
+        return "confirmacionVoto";
+    }
+}

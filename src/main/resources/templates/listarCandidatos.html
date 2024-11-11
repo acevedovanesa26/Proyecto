@@ -4,187 +4,115 @@
     <meta charset="UTF-8">
     <title>Listado de Candidatos - VOTO SMART</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Estilos generales */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
+            background-color: #f8fafc;
             display: flex;
             justify-content: center;
             padding-top: 40px;
             margin: 0;
         }
-
         .table-container {
             background-color: #ffffff;
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 95%;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
             max-width: 1200px;
-            transition: transform 0.3s;
+            margin-top: 20px;
         }
-
-        .table-container:hover {
-            transform: scale(1.02);
-        }
-
         h1 {
             color: #00796b;
             text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.5em;
-            letter-spacing: 1.2px;
-        }
-
-        /* Botón de volver */
-        .back-button {
-            display: inline-flex;
-            align-items: center;
+            font-size: 2em;
             margin-bottom: 20px;
-            background-color: #00796b;
-            color: #ffffff;
-            padding: 12px 18px;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: bold;
-            text-decoration: none;
-            transition: background-color 0.3s;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
         }
-
-        .back-button:hover {
-            background-color: #005a4d;
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
         }
-
-        .back-button i {
-            margin-right: 8px;
-            font-size: 1.2em;
-        }
-
-        /* Tabla */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            font-size: 1.2em;
-        }
-
-        th, td {
-            padding: 18px;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-            word-wrap: break-word; /* Evitar que el texto se desborde */
-        }
-
-        th {
-            background-color: #00796b;
-            color: #ffffff;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #e0f2f1;
-        }
-
-        /* Botones */
         .btn {
-            padding: 10px;
             background-color: #00796b;
             color: #ffffff;
+            padding: 10px 15px;
             border-radius: 8px;
             text-decoration: none;
             font-size: 0.9em;
-            margin: 0 5px;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.3s;
+            font-weight: bold;
         }
-
         .btn i {
-            font-size: 1.2em;
+            margin-right: 8px;
         }
-
         .btn:hover {
-            background-color: #005a4d;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            background-color: #00796b;
         }
-
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #00796b;
+            color: #ffffff;
+        }
+        tr:hover {
+            background-color: #e0f2f1;
+        }
+        .btn-action {
+            padding: 8px;
+            background-color: #00796b;
+            color: #ffffff;
+            border-radius: 5px;
+            margin: 0 3px;
+        }
         .btn-delete {
             background-color: #d9534f;
         }
-
         .btn-delete:hover {
             background-color: #c9302c;
         }
-
-        .btn-create {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            font-weight: bold;
-            letter-spacing: 0.8px;
+        /* Estilo para miniatura y efecto de zoom */
+        .img-thumbnail {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            transition: transform 0.5s ease;
         }
-
-        .btn-create:hover {
-            background-color: #005a4d;
-        }
-
-        .description {
-            color: #666;
-            font-style: italic;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        /* Ajustes para pantallas pequeñas */
-        @media (max-width: 768px) {
-            .table-container {
-                padding: 20px;
-            }
-            th, td {
-                padding: 10px;
-            }
-            .btn {
-                padding: 8px;
-                font-size: 0.8em;
-            }
-            .btn-create {
-                padding: 12px 25px;
-                font-size: 1em;
-            }
+        .img-thumbnail:hover {
+            transform: scale(5); /* Aumento significativo de zoom */
+            z-index: 10;
+            box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid #00796b;
         }
     </style>
 </head>
 <body>
 <div class="table-container">
-    <!-- Botón de "Volver al Dashboard" en la parte superior -->
-    <a href="/dashboard" class="back-button">
-        <i class="fas fa-arrow-left"></i> Volver al Dashboard
-    </a>
-
     <h1>Listado de Candidatos</h1>
-    <p class="description">Administra y visualiza todos los candidatos registrados en el sistema.</p>
-    <a href="/candidato/nuevo" class="btn btn-create">
-        <i class="fas fa-plus-circle"></i> Agregar Nuevo Candidato
-    </a>
+    <div class="btn-container">
+        <a href="/dashboard" class="btn"><i class="fas fa-arrow-left"></i> Volver al Dashboard</a>
+        <a href="/candidato/gestionar" class="btn"><i class="fas fa-plus-circle"></i> Agregar Nuevo Candidato</a>
+    </div>
 
     <table>
         <thead>
         <tr>
             <th>Nombre</th>
             <th>Descripción</th>
+            <th>Elección</th>
             <th>Imagen</th>
             <th>Acciones</th>
         </tr>
@@ -193,16 +121,17 @@
         <tr th:each="candidato : ${candidatos}">
             <td th:text="${candidato.nombre}"></td>
             <td th:text="${candidato.descripcion}"></td>
+            <td th:text="${candidato.eleccion.nombre}"></td>
             <td>
-                <img th:src="@{${candidato.imagen}}" alt="Imagen del Candidato" style="width: 100px; height: auto;">
+                <img th:if="${candidato.imagenUrl != null}"
+                     th:src="@{/imagenes/{img}(img=${candidato.imagenUrl})}"
+                     class="img-thumbnail"
+                     alt="Imagen Candidato"/>
             </td>
             <td>
-                <!-- Ícono de lápiz para "Editar" -->
-                <a th:href="@{/candidato/editar/{id}(id=${candidato.id})}" class="btn">
-                    <i class="fas fa-pencil-alt"></i>
-                </a>
-                <!-- Ícono de "X" roja para "Eliminar" -->
-                <a th:href="@{/candidato/eliminar/{id}(id=${candidato.id})}" class="btn btn-delete" onclick="return confirm('¿Estás seguro de eliminar este candidato?')">
+                <a th:href="@{/candidato/editar/{id}(id=${candidato.id})}" class="btn-action"><i class="fas fa-edit"></i></a>
+                <a th:href="@{/candidato/eliminar/{id}(id=${candidato.id})}" class="btn-action btn-delete"
+                   onclick="return confirm('¿Estás seguro de eliminar este candidato?')">
                     <i class="fas fa-times"></i>
                 </a>
             </td>

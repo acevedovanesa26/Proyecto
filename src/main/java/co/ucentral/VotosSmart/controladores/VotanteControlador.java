@@ -84,17 +84,7 @@ public class VotanteControlador {
 
 
 
-    @GetMapping("elecciones/votar/{id}")
-    public String votarEnEleccion(@PathVariable Long id, HttpSession session, Model model) {
-        if (session.getAttribute("votanteCodigo") != null) {
-            Eleccion eleccion = eleccionServicio.obtenerPorId(id);
-            List<Candidato> candidatos = candidatoServicio.obtenerPorEleccionId(id);
-            model.addAttribute("eleccion", eleccion);
-            model.addAttribute("candidatos", candidatos);
-            return "votar";
-        } else {
-            return "redirect:/loginVotante";
-        }
+
     }
 
-}
+

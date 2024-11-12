@@ -22,13 +22,8 @@ public class VotoControlador {
         Long eleccionId = (Long) session.getAttribute("eleccionId");
 
         if (votanteId != null && eleccionId != null) {
-            boolean votoRegistrado = votoServicio.registrarVoto(votanteId, candidatoId, eleccionId);
-            if (votoRegistrado) {
-                return "redirect:confirmacionVoto"; // Redirige a la página de confirmación si se registra correctamente
-            } else {
-                model.addAttribute("error", "Ya has votado en esta elección.");
-                return "candidatosParaVotar";
-            }
+            votoServicio.registrarVoto(votanteId, candidatoId, eleccionId);
+            return "redirect:/votante/confirmacion";
         } else {
             model.addAttribute("error", "Error al registrar el voto. Intenta de nuevo.");
             return "candidatosParaVotar";
@@ -37,6 +32,6 @@ public class VotoControlador {
 
     @GetMapping("/confirmacion")
     public String mostrarConfirmacionVoto() {
-        return "confirmacionVoto"; // Redirige a una vista de confirmación
+        return "confirmacionVoto"; // Nombre de la vista de confirmación de voto
     }
 }

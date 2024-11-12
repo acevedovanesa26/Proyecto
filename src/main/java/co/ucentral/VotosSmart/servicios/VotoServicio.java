@@ -11,16 +11,11 @@ public class VotoServicio {
 
     private final VotoRepositorio votoRepositorio;
 
-    public boolean registrarVoto(Long votanteId, Long candidatoId, Long eleccionId) {
-        if (votoRepositorio.existsByVotanteIdAndEleccionId(votanteId, eleccionId)) {
-            return false; // El votante ya ha votado en esta elección
-        }
-
+    public void registrarVoto(Long votanteId, Long candidatoId, Long eleccionId) {
         Voto voto = new Voto();
         voto.setVotanteId(votanteId);
         voto.setCandidatoId(candidatoId);
         voto.setEleccionId(eleccionId);
         votoRepositorio.save(voto);
-        return true;
     }
 }

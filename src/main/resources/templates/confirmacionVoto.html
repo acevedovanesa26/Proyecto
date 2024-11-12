@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Confirmación de Voto - VOTO SMART</title>
@@ -7,52 +7,57 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            background-color: #f0f4f8;
         }
-        .container {
+
+        .message-container {
             background-color: #ffffff;
             padding: 40px;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             text-align: center;
-            width: 80%;
-            max-width: 600px;
         }
+
         h1 {
             color: #00796b;
             font-size: 2em;
             margin-bottom: 20px;
         }
+
         p {
-            color: #333;
             font-size: 1.2em;
+            color: #333;
+            margin-bottom: 30px;
         }
-        .btn {
+
+        .btn-exit {
             display: inline-block;
-            margin-top: 20px;
-            padding: 12px 20px;
+            padding: 12px 25px;
             background-color: #00796b;
             color: #ffffff;
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
+            font-size: 1em;
             transition: background-color 0.3s;
         }
-        .btn:hover {
+
+        .btn-exit:hover {
             background-color: #005a4d;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Voto Registrado</h1>
-    <p>Tu voto ha sido registrado correctamente. ¡Gracias por participar!</p>
-    <a th:href="@{/votante/login}" class="btn">Volver a Inicio</a>
+<div class="message-container">
+    <h1>¡Voto registrado correctamente!</h1>
+    <p>Gracias por participar en la votación.</p>
+    <a href="/votante/login" class="btn-exit">Salir</a>
 </div>
 </body>
 </html>
+

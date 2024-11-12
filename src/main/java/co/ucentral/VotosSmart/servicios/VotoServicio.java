@@ -5,26 +5,22 @@ import co.ucentral.VotosSmart.persistencia.repositorios.VotoRepositorio;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 public class VotoServicio {
 
     private final VotoRepositorio votoRepositorio;
 
-    public Voto registrarVoto(Voto voto) {
-        return votoRepositorio.save(voto);
-    }
+    public boolean registrarVoto(Long votanteId, Long candidatoId, Long eleccionId) {
+        if (votoRepositorio.existsByVotanteIdAndEleccionId(votanteId, eleccionId)) {
+            return false; // El votante ya ha votado en esta elección
+        }
 
-    public List<Voto> obtenerPorEleccionId(Long eleccionId) {
-        return votoRepositorio.findByCandidatoEleccionId(eleccionId);
-    }
-
-    public List<Voto> obtenerTodos() {
-        return (List<Voto>) votoRepositorio.findAll();
-    }
-    public Long contarVotosPorCandidato(Long candidatoId) {
-        return votoRepositorio.countByCandidatoId(candidatoId);
+        Voto voto = new Voto();
+        voto.setVotanteId(votanteId);
+        voto.setCandidatoId(candidatoId);
+        voto.setEleccionId(eleccionId);
+        votoRepositorio.save(voto);
+        return true;
     }
 }

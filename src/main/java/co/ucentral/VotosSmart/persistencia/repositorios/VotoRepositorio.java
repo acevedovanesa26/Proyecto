@@ -1,11 +1,10 @@
 package co.ucentral.VotosSmart.persistencia.repositorios;
 
 import co.ucentral.VotosSmart.persistencia.entidades.Voto;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-public interface VotoRepositorio extends CrudRepository<Voto, Long> {
-    List<Voto> findByCandidatoEleccionId(Long eleccionId);
-    Long countByCandidatoId(Long candidatoId);
+@Repository
+public interface VotoRepositorio extends JpaRepository<Voto, Long> {
+    boolean existsByVotanteIdAndEleccionId(Long votanteId, Long eleccionId); // Verifica votos duplicados
 }

@@ -24,7 +24,6 @@ public class VotanteControlador {
     private final CandidatoServicio candidatoServicio;
 
 
-
     // Inicio de sesión del votante
     @GetMapping("/login")
     public String mostrarLoginVotante() {
@@ -37,6 +36,7 @@ public class VotanteControlador {
         model.addAttribute("votante", new Votante());
         return "registroVotante";
     }
+
     @PostMapping("/registro")
     public String registrarVotante(@ModelAttribute Votante votante, Model model) {
         try {
@@ -63,36 +63,17 @@ public class VotanteControlador {
 
     @GetMapping("/elecciones")
     public String mostrarEleccionesDisponibles(Model model) {
-        model.addAttribute("mensaje", "Redirigido correctamente a elecciones disponibles.");
+        List<Eleccion> eleccionesEnCurso = eleccionServicio.obtenerEleccionesEnCurso();
+        model.addAttribute("elecciones", eleccionesEnCurso);
         return "eleccionesDisponibles";
     }
 
-    // Mostrar candidatos para votar en una elección específica
     @GetMapping("/votar/{eleccionId}")
-    public String mostrarCandidatosParaVotar(@PathVariable Long eleccionId, Model model, HttpSession session) {
-        Long votanteId = (Long) session.getAttribute("votanteId");
-        if (votanteId != null) {
-            List<Candidato> candidatos = candidatoServicio.obtenerCandidatosPorEleccion(eleccionId);
-            model.addAttribute("candidatos", candidatos);
-            model.addAttribute("eleccionId", eleccionId);
-            return "candidatosParaVotar";
-        }
-        return "redirect:/votante/login";
+    public String mostrarCandidatosParaVotar(@PathVariable Long eleccionId, Model model) {
+        List<Candidato> candidatos = candidatoServicio.obtenerCandidatosPorEleccion(eleccionId);
+        model.addAttribute("candidatos", candidatos);
+        model.addAttribute("eleccionId", eleccionId);
+        return "candidatosParaVotar";
     }
 
-    // Emitir voto
-    @PostMapping("/emitirVoto")
-    public String emitirVoto(@RequestParam Long candidatoId, @RequestParam Long eleccionId, HttpSession session) {
-        Long votanteId = (Long) session.getAttribute("votanteId");
-        if (votanteId != null) {
-            votanteServicio.emitirVoto(votanteId, candidatoId, eleccionId);
-            return "redirect:/votante/confirmacion";
-        }
-        return "redirect:/votante/login";
-    }
-
-    @GetMapping("/confirmacion")
-    public String confirmacionVoto() {
-        return "confirmacionVoto";
-    }
 }

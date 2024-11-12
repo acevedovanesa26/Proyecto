@@ -57,10 +57,14 @@ public class EleccionServicio {
     }
 
 
-    public List<Eleccion> obtenerEleccionesDisponibles() {
-        return eleccionRepositorio.findAll();
+    public List<Eleccion> obtenerEleccionesEnCurso() {
+        Date fechaActual = new Date();
+        return eleccionRepositorio.findAll().stream()
+                .filter(e -> e.getFechaInicio().before(fechaActual) && e.getFechaFin().after(fechaActual))
+                .collect(Collectors.toList());
     }
 }
+
 
 
 

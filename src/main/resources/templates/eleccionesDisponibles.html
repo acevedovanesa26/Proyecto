@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Elecciones Disponibles - VOTO SMART</title>
+    <title>Elecciones en Curso - VOTO SMART</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -22,8 +22,9 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             width: 90%;
-            max-width: 800px;
+            max-width: 900px;
             text-align: center;
+            position: relative;
         }
 
         h1 {
@@ -32,9 +33,15 @@
             margin-bottom: 30px;
         }
 
+        .welcome-message {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
         .election-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
@@ -42,33 +49,40 @@
         .election-card {
             background-color: #e0f2f1;
             border-radius: 10px;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
         .election-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
         .election-title {
-            font-size: 1.2em;
+            font-size: 1.4em;
             font-weight: 600;
-            color: #005a4d;
+            color: #00796b;
+            margin-bottom: 8px;
+        }
+
+        .election-date {
+            color: #333;
+            font-size: 1em;
             margin-bottom: 10px;
         }
 
         .btn-view {
             display: inline-block;
             margin-top: 15px;
-            padding: 10px 20px;
+            padding: 12px 25px;
             background-color: #00796b;
             color: #ffffff;
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
             transition: background-color 0.3s;
+            font-size: 1em;
         }
 
         .btn-view:hover {
@@ -78,11 +92,16 @@
 </head>
 <body>
 <div class="container">
-    <h1>Elecciones Disponibles</h1>
+    <h1>Bienvenido/a</h1>
+
+    <h1>Elecciones en Curso</h1>
     <div class="election-list">
         <div class="election-card" th:each="eleccion : ${elecciones}">
             <div class="election-title" th:text="${eleccion.nombre}"></div>
-            <p class="election-date">Fecha: <span th:text="${#dates.format(eleccion.fechaInicio, 'dd/MM/yyyy')}"></span></p>
+            <p class="election-date">Fecha:
+                <span th:text="${#dates.format(eleccion.fechaInicio, 'dd/MM/yyyy')}"></span> -
+                <span th:text="${#dates.format(eleccion.fechaFin, 'dd/MM/yyyy')}"></span>
+            </p>
             <a th:href="@{/votante/votar/{eleccionId}(eleccionId=${eleccion.id})}" class="btn-view">Ver Candidatos</a>
         </div>
     </div>

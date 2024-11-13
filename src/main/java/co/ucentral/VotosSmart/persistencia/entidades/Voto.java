@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import lombok.Data;
 
 @Entity
@@ -14,11 +15,15 @@ public class Voto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Long votanteId;
-    private Long candidatoId;
-    private Long eleccionId;  // Agrega el campo eleccionId para identificar la elección en el voto
 
-    // Getters y Setters (si no usas @Data de Lombok)
+    private Long candidatoId; // Este campo puede ser `null` para el voto en blanco
+
+    @Column(nullable = false)
+    private Long eleccionId; // Identifica la elección específica a la que pertenece el voto
+
+    // Getters y Setters (opcional si usas @Data de Lombok)
     public Long getId() {
         return id;
     }

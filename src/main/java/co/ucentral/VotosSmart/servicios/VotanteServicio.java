@@ -30,16 +30,9 @@ public class VotanteServicio {
     }
 
 
-public void emitirVoto(Long votanteId, Long candidatoId, Long eleccionId) {
-        Votante votante = votanteRepositorio.findById(votanteId).orElse(null);
-        if (votante != null && !votante.getHaVotado()) {
-            votante.setCandidatoVotadoId(candidatoId);
-            votante.setEleccionId(eleccionId);
-            votante.setHaVotado(true);
-            votanteRepositorio.save(votante);
-        }
+
     }
 
 
 
-}
+

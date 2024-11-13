@@ -4,5 +4,5 @@ import co.ucentral.VotosSmart.persistencia.entidades.Voto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VotoRepositorio extends JpaRepository<Voto, Long> {
-    // Agrega métodos personalizados si es necesario
+    boolean existsByVotanteIdAndEleccionId(Long votanteId, Long eleccionId);
 }

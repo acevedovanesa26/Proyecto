@@ -8,7 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 @Controller
 @AllArgsConstructor
 @RequestMapping("/votante")
@@ -22,16 +21,18 @@ public class VotoControlador {
         Long eleccionId = (Long) session.getAttribute("eleccionId");
 
         if (votanteId != null && eleccionId != null) {
-            votoServicio.registrarVoto(votanteId, candidatoId, eleccionId);
-            return "redirect:/votante/confirmacion";
+            // Registrar el voto
+            votoServicio.registrarVoto(votanteId, candidatoId == 0 ? null : candidatoId, eleccionId);
+            return "redirect:/votante/confirmacion"; // Redirige a la confirmación
         } else {
             model.addAttribute("error", "Error al registrar el voto. Intenta de nuevo.");
-            return "candidatosParaVotar";
+            return "candidatosParaVotar"; // Redirige a candidatos si hay error
         }
     }
 
     @GetMapping("/confirmacion")
     public String mostrarConfirmacionVoto() {
-        return "confirmacionVoto"; // Nombre de la vista de confirmación de voto
+        return "confirmacionVoto";
     }
 }
+

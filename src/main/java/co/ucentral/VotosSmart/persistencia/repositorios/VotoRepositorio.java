@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VotoRepositorio extends JpaRepository<Voto, Long> {
-
-    // Verificar si el votante ya ha votado en una elección específica
     boolean existsByVotanteIdAndEleccionId(Long votanteId, Long eleccionId);
 }

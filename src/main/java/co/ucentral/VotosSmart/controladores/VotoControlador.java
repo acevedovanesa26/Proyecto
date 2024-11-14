@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("/votante")
@@ -23,7 +24,6 @@ public class VotoControlador {
     private final EleccionServicio eleccionServicio;
     private final CandidatoServicio candidatoServicio;
 
-    // Mostrar candidatos para votar en una elección específica
     @GetMapping("/votar/{eleccionId}")
     public String mostrarCandidatosParaVotar(@PathVariable Long eleccionId, HttpSession session, Model model) {
         session.setAttribute("eleccionId", eleccionId); // Guardar elección en sesión
@@ -33,22 +33,27 @@ public class VotoControlador {
         return "candidatosParaVotar"; // Vista con candidatos de la elección
     }
 
-    // Registrar el voto para el candidato seleccionado
     @GetMapping("/votarPorCandidato/{candidatoId}")
     public String votarPorCandidato(@PathVariable Long candidatoId, HttpSession session, Model model) {
         Long votanteId = (Long) session.getAttribute("votanteId");
         Long eleccionId = (Long) session.getAttribute("eleccionId");
 
-        if (votanteId != null && eleccionId != null) {
-            votoServicio.registrarVoto(votanteId, candidatoId, eleccionId);
-            return "redirect:/votante/confirmacion";
-        } else {
+        if (votanteId == null || eleccionId == null) {
             model.addAttribute("error", "Error al registrar el voto. Intenta de nuevo.");
             return "candidatosParaVotar";
         }
+
+        // Verifica si el votante ya ha votado en esta elección
+        if (votoServicio.haVotadoEnEleccion(votanteId, eleccionId)) {
+            model.addAttribute("error", "Ya has votado en esta elección.");
+            return "candidatosParaVotar";
+        }
+
+        // Registrar el voto si no ha votado aún
+        votoServicio.registrarVoto(votanteId, candidatoId, eleccionId);
+        return "redirect:/votante/confirmacion";
     }
 
-    // Página de confirmación de voto
     @GetMapping("/confirmacion")
     public String mostrarConfirmacionVoto() {
         return "confirmacionVoto";

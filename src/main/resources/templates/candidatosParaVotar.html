@@ -32,6 +32,17 @@
             margin-bottom: 30px;
         }
 
+        .error-message {
+            background-color: #ffdddd;
+            border: 2px solid #ff5c5c;
+            color: #d32f2f;
+            font-size: 2em;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
         .candidate-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -97,7 +108,6 @@
             background-color: #005a4d;
         }
 
-        /* Para candidatos sin foto: centrado vertical */
         .no-photo {
             display: flex;
             align-items: center;
@@ -115,21 +125,28 @@
 <body>
 <div class="container">
     <h1>Candidatos para Votar</h1>
-    <div class="candidate-list">
-        <!-- Candidatos -->
-        <div class="candidate-card" th:each="candidato : ${candidatos}">
-            <div th:if="${candidato.imagenUrl == null}" class="no-photo">Sin Foto</div>
-            <img th:if="${candidato.imagenUrl != null}" th:src="@{/imagenes/{img}(img=${candidato.imagenUrl})}" class="candidate-photo" alt="Foto Candidato"/>
-            <div class="candidate-name" th:text="${candidato.nombre}"></div>
-            <p class="candidate-description" th:text="${candidato.descripcion}"></p>
-            <a th:href="@{/votante/votarPorCandidato/{candidatoId}(candidatoId=${candidato.id})}" class="btn-vote">Votar</a>
-        </div>
 
-        <!-- Voto en Blanco -->
-        <div class="candidate-card">
-            <div class="candidate-name">Voto en Blanco</div>
-            <p class="candidate-description">Seleccione esta opción si desea votar en blanco.</p>
-            <a th:href="@{/votante/votarPorCandidato/0}" class="btn-vote">Votar en Blanco</a>        </div>
+    <!-- Mostrar mensaje de error si el votante ya ha votado -->
+    <div th:if="${error}" class="error-message" th:text="${error}">Ya has votado en esta elección</div>
+
+    <!-- Mostrar lista de candidatos y voto en blanco solo si no hay error -->
+    <div th:if="${error == null}">
+        <div class="candidate-list">
+            <div class="candidate-card" th:each="candidato : ${candidatos}">
+                <div th:if="${candidato.imagenUrl == null}" class="no-photo">Sin Foto</div>
+                <img th:if="${candidato.imagenUrl != null}" th:src="@{/imagenes/{img}(img=${candidato.imagenUrl})}" class="candidate-photo" alt="Foto Candidato"/>
+                <div class="candidate-name" th:text="${candidato.nombre}"></div>
+                <p class="candidate-description" th:text="${candidato.descripcion}"></p>
+                <a th:href="@{/votante/votarPorCandidato/{candidatoId}(candidatoId=${candidato.id})}" class="btn-vote">Votar</a>
+            </div>
+
+            <!-- Voto en Blanco -->
+            <div class="candidate-card">
+                <div class="candidate-name">Voto en Blanco</div>
+                <p class="candidate-description">Seleccione esta opción si desea votar en blanco.</p>
+                <a th:href="@{/votante/votarPorCandidato/0}" class="btn-vote">Votar en Blanco</a>
+            </div>
+        </div>
     </div>
 </div>
 </body>

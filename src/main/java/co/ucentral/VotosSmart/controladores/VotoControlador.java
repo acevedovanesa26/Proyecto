@@ -46,7 +46,7 @@ public class VotoControlador {
         // Verifica si el votante ya ha votado en esta elección
         if (votoServicio.haVotadoEnEleccion(votanteId, eleccionId)) {
             model.addAttribute("error", "Ya has votado en esta elección.");
-            return "candidatosParaVotar";
+            return "candidatosParaVotar"; // Vuelve a mostrar los candidatos con el mensaje de error
         }
 
         // Registrar el voto si no ha votado aún

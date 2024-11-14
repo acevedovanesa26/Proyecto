@@ -20,7 +20,7 @@ public class VotoServicio {
         votoRepositorio.save(voto);
     }
 
-    // Método para verificar si el votante ya votó en una elección específica
+    // Métodopara verificar si el votante ya votó en una elección específica
     public boolean haVotadoEnEleccion(Long votanteId, Long eleccionId) {
         return votoRepositorio.existsByVotanteIdAndEleccionId(votanteId, eleccionId);
     }

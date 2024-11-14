@@ -4,19 +4,13 @@ import co.ucentral.VotosSmart.persistencia.entidades.*;
 import co.ucentral.VotosSmart.servicios.AdministradorServicio;
 import co.ucentral.VotosSmart.servicios.CandidatoServicio;
 import co.ucentral.VotosSmart.servicios.EleccionServicio;
-import co.ucentral.VotosSmart.servicios.PDFServicio;
-import co.ucentral.VotosSmart.servicios.VotanteServicio;
 import co.ucentral.VotosSmart.servicios.VotoServicio;
 import lombok.AllArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+
 import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.List;
@@ -30,7 +24,7 @@ public class AdministradorControlador {
     private final EleccionServicio eleccionServicio;
     private final CandidatoServicio candidatoServicio;
     private final VotoServicio votoServicio;
-    private final PDFServicio pdfServicio; // Servicio para generar PDFs
+
 
 
     @GetMapping("/")

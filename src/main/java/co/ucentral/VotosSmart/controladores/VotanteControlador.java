@@ -68,12 +68,5 @@ public class VotanteControlador {
         return "eleccionesDisponibles";
     }
 
-    @GetMapping("/votar/{eleccionId}")
-    public String mostrarCandidatosParaVotar(@PathVariable Long eleccionId, Model model) {
-        List<Candidato> candidatos = candidatoServicio.obtenerCandidatosPorEleccion(eleccionId);
-        model.addAttribute("candidatos", candidatos);
-        model.addAttribute("eleccionId", eleccionId);
-        return "candidatosParaVotar";
-    }
 
 }

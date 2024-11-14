@@ -4,24 +4,30 @@ import co.ucentral.VotosSmart.persistencia.entidades.Voto;
 import co.ucentral.VotosSmart.persistencia.repositorios.VotoRepositorio;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-@Service
+import org.springframework.transaction.annotation.Transactional;
 
+@AllArgsConstructor
+@Service
 public class VotoServicio {
 
     private final VotoRepositorio votoRepositorio;
 
-    public VotoServicio(VotoRepositorio votoRepositorio) {
-        this.votoRepositorio = votoRepositorio;
+    // Registrar voto en la base de datos
+    @Transactional
+    public void registrarVoto(Long votanteId, Long candidatoId, Long eleccionId) {
+        if (!votanteHaVotado(votanteId, eleccionId)) {
+            Voto voto = new Voto();
+            voto.setVotanteId(votanteId);
+            voto.setCandidatoId(candidatoId);
+            voto.setEleccionId(eleccionId);
+            votoRepositorio.save(voto);
+        } else {
+            throw new IllegalArgumentException("El votante ya ha votado en esta elección.");
+        }
     }
 
-    public void registrarVoto(Long votanteId, Long candidatoId, Long eleccionId) {
-        Voto voto = new Voto();
-        voto.setVotanteId(votanteId);
-        voto.setCandidatoId(candidatoId); // Si es Voto en Blanco, `candidatoId` será `null`
-        voto.setEleccionId(eleccionId);
-        votoRepositorio.save(voto);
+    // Verificar si el votante ya ha votado en una elección específica
+    public boolean votanteHaVotado(Long votanteId, Long eleccionId) {
+        return votoRepositorio.existsByVotanteIdAndEleccionId(votanteId, eleccionId);
     }
 }
-
-
-

@@ -1,5 +1,8 @@
 package co.ucentral.VotosSmart.controladores;
 
+import co.ucentral.VotosSmart.persistencia.entidades.Candidato;
+import co.ucentral.VotosSmart.servicios.CandidatoServicio;
+import co.ucentral.VotosSmart.servicios.EleccionServicio;
 import co.ucentral.VotosSmart.servicios.VotoServicio;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
@@ -8,31 +11,46 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
+
 @Controller
 @AllArgsConstructor
 @RequestMapping("/votante")
 public class VotoControlador {
 
     private final VotoServicio votoServicio;
+    private final EleccionServicio eleccionServicio;
+    private final CandidatoServicio candidatoServicio;
 
+    // Mostrar candidatos para votar en una elección específica
+    @GetMapping("/votar/{eleccionId}")
+    public String mostrarCandidatosParaVotar(@PathVariable Long eleccionId, HttpSession session, Model model) {
+        session.setAttribute("eleccionId", eleccionId); // Guardar elección en sesión
+        List<Candidato> candidatos = candidatoServicio.obtenerCandidatosPorEleccion(eleccionId);
+        model.addAttribute("candidatos", candidatos);
+        model.addAttribute("eleccionId", eleccionId);
+        return "candidatosParaVotar"; // Vista con candidatos de la elección
+    }
+
+    // Registrar el voto para el candidato seleccionado
     @GetMapping("/votarPorCandidato/{candidatoId}")
     public String votarPorCandidato(@PathVariable Long candidatoId, HttpSession session, Model model) {
         Long votanteId = (Long) session.getAttribute("votanteId");
         Long eleccionId = (Long) session.getAttribute("eleccionId");
 
         if (votanteId != null && eleccionId != null) {
-            // Registrar el voto
-            votoServicio.registrarVoto(votanteId, candidatoId == 0 ? null : candidatoId, eleccionId);
-            return "redirect:/votante/confirmacion"; // Redirige a la confirmación
+            votoServicio.registrarVoto(votanteId, candidatoId, eleccionId);
+            return "redirect:/votante/confirmacion";
         } else {
             model.addAttribute("error", "Error al registrar el voto. Intenta de nuevo.");
-            return "candidatosParaVotar"; // Redirige a candidatos si hay error
+            return "candidatosParaVotar";
         }
     }
 
+    // Página de confirmación de voto
     @GetMapping("/confirmacion")
     public String mostrarConfirmacionVoto() {
         return "confirmacionVoto";
     }
 }
-

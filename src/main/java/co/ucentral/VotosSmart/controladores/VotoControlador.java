@@ -43,13 +43,13 @@ public class VotoControlador {
             return "candidatosParaVotar";
         }
 
-        // Verifica si el votante ya ha votado en esta elección
+        // Verifica si el votante ya ha votado en esta eleccion ds
         if (votoServicio.haVotadoEnEleccion(votanteId, eleccionId)) {
             model.addAttribute("error", "Ya has votado en esta elección.");
             return "candidatosParaVotar"; // Vuelve a mostrar los candidatos con el mensaje de error
         }
 
-        // Registrar el voto si no ha votado aún
+        // Registrar el voto si no ha votado // listooooooo
         votoServicio.registrarVoto(votanteId, candidatoId, eleccionId);
         return "redirect:/votante/confirmacion";
     }

@@ -73,6 +73,13 @@ public class EleccionServicio {
     public Eleccion obtenerEleccionPorId(Long eleccionId) {
         return eleccionRepositorio.findById(eleccionId).orElse(null);
     }
+
+    public List<Eleccion> obtenerEleccionesFinalizadas() {
+        Date fechaActual = new Date();
+        return eleccionRepositorio.findAllByFechaFinBefore(fechaActual);
+    }
+
+
 }
 
 

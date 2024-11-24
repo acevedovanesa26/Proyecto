@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Resultados en Tiempo Real - VOTO SMART</title>
-    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
     <style>
         /* Estilos generales */
         body {
@@ -69,13 +69,23 @@
             color: #00796b;
         }
 
+        /* Estilos para las fotos de candidatos */
         .candidate-photo {
             width: 60px;
             height: 60px;
             border-radius: 50%;
             object-fit: cover;
+            transition: transform 0.3s;
+            cursor: zoom-in;
         }
 
+        .candidate-photo:hover {
+            transform: scale(2.5); /* Aumento del zoom */
+            z-index: 10;
+            position: relative;
+        }
+
+        /* Estilos para candidatos sin foto */
         .no-photo {
             width: 60px;
             height: 60px;
@@ -86,6 +96,16 @@
             align-items: center;
             justify-content: center;
             font-size: 0.9em;
+            border: 2px solid #b0bec5;
+        }
+
+        /* Estilos específicos para Votos en Blanco */
+        .voto-en-blanco {
+            background-color: #ffffff;
+            color: #00796b;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: 2px solid #00796b;
         }
     </style>
 </head>
@@ -123,7 +143,9 @@
             </tr>
             <!-- Fila para Votos en Blanco -->
             <tr>
-                <td class="no-photo">N/A</td>
+                <td>
+                    <div class="no-photo voto-en-blanco">V</div>
+                </td>
                 <td>Votos en Blanco</td>
                 <td>N/A</td>
                 <td th:text="${votosEnBlancoPorEleccion[eleccion.id]}"></td>

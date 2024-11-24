@@ -6,6 +6,9 @@ import co.ucentral.VotosSmart.servicios.CandidatoServicio;
 import co.ucentral.VotosSmart.servicios.EleccionServicio;
 import co.ucentral.VotosSmart.servicios.VotoServicio;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -133,4 +136,7 @@ public class AdministradorControlador {
 
         return "resultadosEnTiempoReal";
     }
+
+
+
 }

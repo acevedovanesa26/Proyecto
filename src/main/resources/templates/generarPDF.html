@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generar Reportes PDF - VOTO SMART</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            color: #00796b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #00796b;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-back:hover {
+            background-color: #005a4d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #e0f2f1;
+            color: #00796b;
+        }
+
+        .btn-generate {
+            background-color: #00796b;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-generate:hover {
+            background-color: #005a4d;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a th:href="@{/dashboard}" class="btn-back">Volver</a>
+    <h1>Generar Reportes PDF</h1>
+
+    <div th:if="${elecciones.size() == 0}">
+        <p>No hay elecciones finalizadas disponibles.</p>
+    </div>
+
+    <table th:if="${elecciones.size() > 0}">
+        <thead>
+        <tr>
+            <th>Nombre de la Elección</th>
+            <th>Descripción</th>
+            <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="eleccion : ${elecciones}">
+            <td th:text="${eleccion.nombre}"></td>
+            <td th:text="${eleccion.descripcion}"></td>
+            <td>
+                <a th:href="@{/generarPDF/{id}(id=${eleccion.id})}" class="btn-generate">Generar PDF</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

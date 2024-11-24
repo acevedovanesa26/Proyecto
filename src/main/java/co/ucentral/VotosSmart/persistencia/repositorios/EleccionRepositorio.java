@@ -7,10 +7,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface EleccionRepositorio extends JpaRepository<Eleccion, Long> {
 
+    List<Eleccion> findAllByFechaFinBefore(Date fecha);
 
     @Query("SELECT e FROM Eleccion e WHERE (e.fechaInicio <= :ahora AND e.fechaFin >= :ahora) OR e.fechaFin < :ahora")
     List<Eleccion> obtenerEleccionesEnCursoYFinalizadas(@Param("ahora") LocalDateTime ahora);

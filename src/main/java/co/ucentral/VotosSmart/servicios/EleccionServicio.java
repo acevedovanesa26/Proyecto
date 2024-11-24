@@ -5,6 +5,7 @@ import co.ucentral.VotosSmart.persistencia.repositorios.EleccionRepositorio;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +64,18 @@ public class EleccionServicio {
                 .filter(e -> e.getFechaInicio().before(fechaActual) && e.getFechaFin().after(fechaActual))
                 .collect(Collectors.toList());
     }
+
+    public List<Eleccion> obtenerEleccionesEnCursoYFinalizadas() {
+        LocalDateTime ahora = LocalDateTime.now();
+        return eleccionRepositorio.obtenerEleccionesEnCursoYFinalizadas(ahora);
+    }
+
+    public Eleccion obtenerEleccionPorId(Long eleccionId) {
+        return eleccionRepositorio.findById(eleccionId).orElse(null);
+    }
 }
+
+
 
 
 

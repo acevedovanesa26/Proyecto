@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados en Tiempo Real - VOTO SMART</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap">
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #00796b;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 40px;
+        }
+
+        /* Botón "Volver al Dashboard" */
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #00796b;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-back:hover {
+            background-color: #005a4d;
+        }
+
+        /* Estilos para los resultados */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th, .results-table td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: #e0f2f1;
+            color: #00796b;
+        }
+
+        .candidate-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .no-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #cfd8dc;
+            color: #607d8b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a th:href="@{/dashboard}" class="btn-back">Volver</a>
+    <h1>Resultados en Tiempo Real</h1>
+
+    <div th:if="${elecciones.size() == 0}">
+        <p>No hay elecciones en curso o finalizadas.</p>
+    </div>
+
+    <div th:each="eleccion : ${elecciones}">
+        <h2 th:text="${eleccion.nombre}"></h2>
+        <p th:text="${eleccion.descripcion}"></p>
+
+        <table class="results-table">
+            <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Nombre del Candidato</th>
+                <th>Descripción</th>
+                <th>Número de Votos</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="resultado : ${resultadosPorEleccion[eleccion.id]}">
+                <td>
+                    <img th:if="${resultado[3] != null}" th:src="@{/imagenes/{img}(img=${resultado[3]})}" class="candidate-photo" alt="Foto Candidato"/>
+                    <div th:if="${resultado[3] == null}" class="no-photo">Sin Foto</div>
+                </td>
+                <td th:text="${resultado[1]}"></td>
+                <td th:text="${resultado[2]}"></td>
+                <td th:text="${resultado[4]}"></td>
+            </tr>
+            <!-- Fila para Votos en Blanco -->
+            <tr>
+                <td class="no-photo">N/A</td>
+                <td>Votos en Blanco</td>
+                <td>N/A</td>
+                <td th:text="${votosEnBlancoPorEleccion[eleccion.id]}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

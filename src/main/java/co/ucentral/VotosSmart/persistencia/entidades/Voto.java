@@ -1,14 +1,11 @@
 package co.ucentral.VotosSmart.persistencia.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "voto")
 public class Voto {
 
     @Id
@@ -20,8 +17,9 @@ public class Voto {
 
     private Long candidatoId; // Este campo puede ser `null` para el voto en blanco
 
-    @Column(nullable = false)
-    private Long eleccionId; // Identifica la elección específica a la que pertenece el voto
+
+    @Column(name = "eleccion_id", nullable = false)
+    private Long eleccionId;
 
     // Getters y Setters (opcional si usas @Data de Lombok)
     public Long getId() {

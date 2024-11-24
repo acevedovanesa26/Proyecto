@@ -13,7 +13,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.ByteArrayInputStream;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @Controller
@@ -107,8 +109,28 @@ public class AdministradorControlador {
             return "redirect:/login";
         }
     }
+    @GetMapping("/resultados")
+    public String verResultadosTiempoReal(Model model) {
+        // Obtener elecciones en curso y finalizadas
+        List<Eleccion> elecciones = eleccionServicio.obtenerEleccionesEnCursoYFinalizadas();
 
+        // Mapas para almacenar los resultados y votos en blanco por elección
+        Map<Long, List<Object[]>> resultadosPorEleccion = new HashMap<>();
+        Map<Long, Long> votosEnBlancoPorEleccion = new HashMap<>();
 
+        for (Eleccion eleccion : elecciones) {
+            List<Object[]> resultados = votoServicio.obtenerResultadosPorEleccion(eleccion.getId());
+            Long votosEnBlanco = votoServicio.obtenerVotosEnBlanco(eleccion.getId());
 
+            resultadosPorEleccion.put(eleccion.getId(), resultados);
+            votosEnBlancoPorEleccion.put(eleccion.getId(), votosEnBlanco);
+        }
 
+        // Agregamos los datos al modelo
+        model.addAttribute("elecciones", elecciones);
+        model.addAttribute("resultadosPorEleccion", resultadosPorEleccion);
+        model.addAttribute("votosEnBlancoPorEleccion", votosEnBlancoPorEleccion);
+
+        return "resultadosEnTiempoReal";
+    }
 }

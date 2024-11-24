@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @NoArgsConstructor
 public class Eleccion {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "eleccion_id")
@@ -44,7 +45,7 @@ public class Eleccion {
     @Transient
     private String estado;
 
-    // Método que calcula el estado en función de las fechas de inicio y fin
+    // Métodoquecalcula el estado en función de las fechas de inicio y fin
     public String getEstado() {
         Date now = new Date();
         if (now.before(this.fechaInicio)) {

@@ -5,6 +5,8 @@ import co.ucentral.VotosSmart.persistencia.repositorios.VotoRepositorio;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @AllArgsConstructor
@@ -23,5 +25,12 @@ public class VotoServicio {
     // Métodopara verificar si el votante ya votó en una elección específica
     public boolean haVotadoEnEleccion(Long votanteId, Long eleccionId) {
         return votoRepositorio.existsByVotanteIdAndEleccionId(votanteId, eleccionId);
+    }
+    public List<Object[]> obtenerResultadosPorEleccion(Long eleccionId) {
+        return votoRepositorio.contarVotosPorCandidatoEnEleccion(eleccionId);
+    }
+
+    public Long obtenerVotosEnBlanco(Long eleccionId) {
+        return votoRepositorio.contarVotosEnBlanco(eleccionId);
     }
 }

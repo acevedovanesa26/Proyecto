@@ -34,13 +34,21 @@ public class CandidatoControlador {
                                    @RequestParam("imagen") MultipartFile imagen,
                                    Model model) {
         Eleccion eleccion = eleccionServicio.obtenerPorId(eleccionId);
-        if (eleccion != null) {
-            candidato.setEleccion(eleccion);
-            candidatoServicio.guardarCandidato(candidato, imagen);
-        } else {
+        if (eleccion == null) {
             model.addAttribute("error", "Elección no válida o no disponible.");
             return "gestionarCandidatos";
         }
+
+        // Validar que no se exceda el número máximo de candidatos permitidos
+        List<Candidato> candidatosExistentes = candidatoServicio.obtenerCandidatosPorEleccion(eleccionId);
+        if (candidatosExistentes.size() >= eleccion.getMaxCandidatos()) {
+            model.addAttribute("error", "Límite de candidatos alcanzado. No puedes agregar más candidatos a esta elección.");
+            model.addAttribute("elecciones", eleccionServicio.obtenerEleccionesPendientes()); // Volver a cargar elecciones
+            return "gestionarCandidatos";
+        }
+
+        candidato.setEleccion(eleccion);
+        candidatoServicio.guardarCandidato(candidato, imagen);
         return "redirect:/candidato/listar";
     }
 
@@ -54,7 +62,31 @@ public class CandidatoControlador {
         List<Eleccion> eleccionesPendientes = eleccionServicio.obtenerEleccionesPendientes();
         model.addAttribute("candidato", candidato);
         model.addAttribute("elecciones", eleccionesPendientes);
-        return "gestionarCandidatos";
+        return "editarCandidato"; // Cambiado para redirigir a una vista específica de edición
+    }
+
+    @PostMapping("/actualizar")
+    public String actualizarCandidato(@ModelAttribute Candidato candidato,
+                                      @RequestParam(value = "imagen", required = false) MultipartFile imagen,
+                                      Model model) {
+        Eleccion eleccion = eleccionServicio.obtenerPorId(candidato.getEleccion().getId());
+        if (eleccion == null) {
+            model.addAttribute("error", "Elección no válida o no disponible.");
+            model.addAttribute("candidato", candidato);
+            model.addAttribute("elecciones", eleccionServicio.obtenerEleccionesPendientes());
+            return "editarCandidato"; // Devuelve la vista de edición con el mensaje de error
+        }
+
+        candidato.setEleccion(eleccion);
+
+        if (imagen != null && !imagen.isEmpty()) {
+            candidatoServicio.eliminarImagenFisica(candidato.getImagenUrl()); // Eliminar imagen anterior
+            candidatoServicio.guardarCandidato(candidato, imagen); // Guardar nueva imagen
+        } else {
+            candidatoServicio.guardarCandidato(candidato, null); // Actualizar sin cambiar la imagen
+        }
+
+        return "redirect:/candidato/listar"; // Redirigir al listado de candidatos después de actualizar
     }
 
     @GetMapping("/listar")

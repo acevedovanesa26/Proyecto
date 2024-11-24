@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Gestionar Candidato - VOTO SMART</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -13,21 +14,35 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px;
         }
 
         .form-container {
             background-color: #ffffff;
-            padding: 40px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 600px;
+            width: 100%;
+            max-width: 500px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
             color: #00796b;
             text-align: center;
-            font-size: 2em;
+            font-size: 1.8em;
+            margin-bottom: 20px;
         }
 
         label {
@@ -35,14 +50,23 @@
             font-weight: 600;
             margin-top: 15px;
             color: #555;
+            font-size: 0.9em;
         }
 
         input[type="text"], textarea, select, input[type="file"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-top: 8px;
             border-radius: 8px;
             border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            font-size: 0.9em;
+        }
+
+        input[type="text"]:focus, textarea:focus, select:focus, input[type="file"]:focus {
+            border-color: #00796b;
+            outline: none;
+            background-color: #fff;
         }
 
         .btn-submit {
@@ -50,39 +74,106 @@
             padding: 15px;
             background-color: #00796b;
             color: #fff;
+            border: none;
             border-radius: 8px;
-            font-size: 18px;
+            font-size: 1em;
             margin-top: 20px;
             cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .btn-submit:hover {
+            background-color: #005a4d;
+            transform: scale(1.03);
+        }
+
+        .error-message {
+            color: #d9534f;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            animation: shake 0.3s ease-in-out;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            100% { transform: translateX(0); }
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #00796b;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #005a4d;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 20px;
             background-color: #00796b;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .back-button:hover {
+            background-color: #005a4d;
+        }
+
+        .back-button i {
+            margin-right: 8px;
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
 <div class="form-container">
-    <h1 th:text="${candidato.id != null ? 'Editar Candidato' : 'Agregar Candidato'}">Gestionar Candidato</h1>
+    <!-- Botón para volver al listado de candidatos -->
+    <a href="/candidato/listar" class="back-button">
+        <i class="fas fa-arrow-left"></i> Volver al Listado de Candidatos
+    </a>
 
-    <form th:action="@{/candidato/guardar}" th:object="${candidato}" method="post" enctype="multipart/form-data">
-        <input type="hidden" th:field="*{id}" />
+    <h1>Gestionar Candidatos</h1>
 
-        <label for="nombre">Nombre del Candidato</label>
-        <input type="text" id="nombre" th:field="*{nombre}" required />
+    <!-- Mostrar mensaje de error -->
+    <div th:if="${error}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
 
-        <label for="descripcion">Descripción</label>
-        <textarea id="descripcion" th:field="*{descripcion}" required></textarea>
+    <!-- Formulario para gestionar candidatos -->
+    <form th:action="@{/candidato/guardar}" method="post" enctype="multipart/form-data">
+        <label for="nombre">Nombre del Candidato:</label>
+        <input type="text" id="nombre" name="nombre" placeholder="Escribe el nombre del candidato" required>
 
-        <label for="eleccionId">Elección</label>
-        <select id="eleccionId" name="eleccionId" required>
-            <option th:each="eleccion : ${elecciones}" th:value="${eleccion.id}" th:text="${eleccion.nombre}">Seleccione una elección</option>
-        </select>
+        <label for="descripcion">Descripción:</label>
+        <textarea id="descripcion" name="descripcion" placeholder="Escribe una breve descripción" required></textarea>
 
-        <label for="imagen">Imagen (Opcional)</label>
+        <label for="imagen">Imagen:</label>
         <input type="file" id="imagen" name="imagen" accept="image/*">
 
-        <button type="submit" class="btn-submit">Guardar Candidato</button>
+        <label for="eleccionId">Elección:</label>
+        <select id="eleccionId" name="eleccionId" required>
+            <option value="" disabled selected>Selecciona una elección</option>
+            <option th:each="eleccion : ${elecciones}" th:value="${eleccion.id}" th:text="${eleccion.nombre}"></option>
+        </select>
+
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-save"></i> Guardar
+        </button>
     </form>
 </div>
 </body>

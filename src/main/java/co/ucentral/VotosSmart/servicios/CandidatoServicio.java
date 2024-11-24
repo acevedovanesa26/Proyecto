@@ -61,7 +61,7 @@ public class CandidatoServicio {
         }
     }
 
-    private void eliminarImagenFisica(String imagenUrl) {
+    public void eliminarImagenFisica(String imagenUrl) {
         if (imagenUrl != null && !imagenUrl.isEmpty()) {
             try {
                 Path rutaImagen = Paths.get(IMAGENES_DIR, imagenUrl);
@@ -71,6 +71,8 @@ public class CandidatoServicio {
             }
         }
     }
+
+
 
     public List<Eleccion> obtenerEleccionesPendientes() {
         return eleccionRepositorio.findAll().stream()

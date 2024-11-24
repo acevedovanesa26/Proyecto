@@ -4,85 +4,140 @@
   <meta charset="UTF-8">
   <title>Editar Candidato - VOTO SMART</title>
   <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    /* Estilos generales */
     body {
       font-family: 'Poppins', sans-serif;
       background-color: #f0f4f8;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
       margin: 0;
     }
+
     .form-container {
       background-color: #ffffff;
-      padding: 40px;
+      padding: 30px;
       border-radius: 15px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       width: 90%;
-      max-width: 600px;
+      max-width: 500px;
     }
+
     h1 {
       color: #00796b;
       text-align: center;
-      font-size: 2em;
+      font-size: 1.8em;
+      margin-bottom: 20px;
     }
+
     label {
       display: block;
       font-weight: 600;
       margin-top: 15px;
       color: #555;
     }
+
     input[type="text"], textarea, select, input[type="file"] {
       width: 100%;
       padding: 10px;
       margin-top: 8px;
       border-radius: 8px;
       border: 1px solid #ddd;
+      background-color: #f9f9f9;
     }
+
+    input:focus, textarea:focus, select:focus, input[type="file"]:focus {
+      border-color: #00796b;
+      background-color: #fff;
+    }
+
     .btn-submit {
       width: 100%;
       padding: 15px;
       background-color: #00796b;
       color: #fff;
+      border: none;
       border-radius: 8px;
-      font-size: 18px;
+      font-size: 1em;
       margin-top: 20px;
       cursor: pointer;
+      text-align: center;
+      text-decoration: none;
     }
+
     .btn-submit:hover {
-      background-color: #00796b;
+      background-color: #005a4d;
     }
-    .image-preview {
-      display: block;
-      margin: 15px 0;
-      max-width: 100px;
-      max-height: 100px;
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      background-color: #00796b;
+      color: #ffffff;
+      padding: 12px 18px;
       border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      font-size: 0.9em;
+      font-weight: bold;
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-back:hover {
+      background-color: #005a4d;
+      transform: translateY(-2px);
+    }
+
+    .btn-back i {
+      margin-right: 8px;
+      font-size: 1.2em;
+    }
+
+    .error-message {
+      color: #d9534f;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
     }
   </style>
 </head>
 <body>
 <div class="form-container">
+  <!-- Botón para volver al listado de candidatos -->
+  <a href="/candidato/listar" class="btn-back">
+    <i class="fas fa-arrow-left"></i> Volver al Listado de Candidatos
+  </a>
+
   <h1>Editar Candidato</h1>
+
+  <!-- Mensaje de error -->
+  <div th:if="${error}" class="error-message">
+    <p th:text="${error}"></p>
+  </div>
+
+  <!-- Formulario de edición -->
   <form th:action="@{/candidato/actualizar}" th:object="${candidato}" method="post" enctype="multipart/form-data">
     <input type="hidden" th:field="*{id}"/>
-    <label for="nombre">Nombre del Candidato</label>
-    <input type="text" id="nombre" th:field="*{nombre}" required>
-    <label for="descripcion">Descripción</label>
-    <textarea id="descripcion" th:field="*{descripcion}" required></textarea>
-    <label for="eleccion">Elección</label>
-    <select id="eleccion" th:field="*{eleccion.id}" required>
+
+    <label for="nombre">Nombre del Candidato:</label>
+    <input type="text" th:field="*{nombre}" id="nombre" required/>
+
+    <label for="descripcion">Descripción:</label>
+    <textarea th:field="*{descripcion}" id="descripcion" required></textarea>
+
+    <label for="imagen">Imagen:</label>
+    <input type="file" id="imagen" name="imagen" accept="image/*">
+
+    <label for="eleccionId">Elección:</label>
+    <select id="eleccionId" th:field="*{eleccion.id}" required>
       <option th:each="eleccion : ${elecciones}" th:value="${eleccion.id}" th:text="${eleccion.nombre}"></option>
     </select>
-    <label for="imagen">Imagen (Opcional)</label>
-    <input type="file" id="imagen" name="imagen" accept="image/*">
-    <div th:if="${candidato.imagenUrl}">
-      <p>Imagen actual:</p>
-      <img th:src="@{${candidato.imagenUrl}}" alt="Imagen del Candidato" class="image-preview">
-    </div>
-    <button type="submit" class="btn-submit">Actualizar Candidato</button>
+
+    <button type="submit" class="btn-submit">Guardar Cambios</button>
   </form>
 </div>
 </body>

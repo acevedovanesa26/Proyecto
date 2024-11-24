@@ -27,10 +27,6 @@
             transition: transform 0.3s;
         }
 
-        .table-container:hover {
-            transform: scale(1.02);
-        }
-
         h1 {
             color: #00796b;
             text-align: center;
@@ -76,7 +72,7 @@
             padding: 18px;
             border-bottom: 1px solid #ddd;
             text-align: center;
-            word-wrap: break-word; /* Evitar que el texto se desborde */
+            word-wrap: break-word;
         }
 
         th {
@@ -111,10 +107,6 @@
             box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
         }
 
-        .btn i {
-            font-size: 1.2em;
-        }
-
         .btn:hover {
             background-color: #005a4d;
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
@@ -146,6 +138,70 @@
             font-style: italic;
             margin-bottom: 20px;
             text-align: center;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content p {
+            font-size: 1.2em;
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal-buttons a, .modal-buttons button {
+            background-color: #d9534f;
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .modal-buttons button {
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-buttons a:hover, .modal-buttons button:hover {
+            background-color: #c9302c;
+        }
+
+        .modal-buttons .btn-cancel {
+            background-color: #b0bec5;
+        }
+
+        .modal-buttons .btn-cancel:hover {
+            background-color: #8a9ca6;
         }
 
         /* Ajustes para pantallas pequeñas */
@@ -187,7 +243,7 @@
             <th>Fecha Inicio</th>
             <th>Fecha Fin</th>
             <th>Máximo de Candidatos</th>
-            <th>Estado</th> <!-- Nueva columna para el estado -->
+            <th>Estado</th>
             <th>Acciones</th>
         </tr>
         </thead>
@@ -197,20 +253,48 @@
             <td th:text="${#dates.format(eleccion.fechaInicio, 'dd/MM/yyyy HH:mm')}"></td>
             <td th:text="${#dates.format(eleccion.fechaFin, 'dd/MM/yyyy HH:mm')}"></td>
             <td th:text="${eleccion.maxCandidatos}"></td>
-            <td th:text="${eleccion.estado}"></td> <!-- Mostrar el estado aquí -->
+            <td th:text="${eleccion.estado}"></td>
             <td>
-                <!-- Ícono de lápiz para "Editar" -->
-                <a th:href="@{/eleccion/editar/{id}(id=${eleccion.id})}" class="btn">
+                <!-- Botón Editar solo para pendientes -->
+                <a th:if="${eleccion.estado == 'Pendiente'}"
+                   th:href="@{/eleccion/editar/{id}(id=${eleccion.id})}" class="btn">
                     <i class="fas fa-pencil-alt"></i>
                 </a>
-                <!-- Ícono de "X" roja para "Eliminar" -->
-                <a th:href="@{/eleccion/eliminar/{id}(id=${eleccion.id})}" class="btn btn-delete" onclick="return confirm('¿Estás seguro de eliminar esta elección?')">
+                <!-- Botón Eliminar para pendientes y finalizadas -->
+                <button th:if="${eleccion.estado == 'Pendiente' || eleccion.estado == 'Finalizada'}"
+                        class="btn btn-delete"
+                        th:attr="onclick=|showConfirmModal('/eleccion/eliminar/${eleccion.id}')|">
                     <i class="fas fa-times"></i>
-                </a>
+                </button>
             </td>
         </tr>
         </tbody>
     </table>
 </div>
+
+<!-- Modal -->
+<div id="confirmModal" class="modal">
+    <div class="modal-content">
+        <p>¿Estás seguro de eliminar esta elección? Esta acción no puede deshacerse.</p>
+        <div class="modal-buttons">
+            <a id="confirmDelete" href="#">Eliminar</a>
+            <button onclick="hideConfirmModal()" class="btn-cancel">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById('confirmModal');
+    const confirmDelete = document.getElementById('confirmDelete');
+
+    function showConfirmModal(deleteUrl) {
+        confirmDelete.href = deleteUrl;
+        modal.style.display = 'flex';
+    }
+
+    function hideConfirmModal() {
+        modal.style.display = 'none';
+    }
+</script>
 </body>
 </html>

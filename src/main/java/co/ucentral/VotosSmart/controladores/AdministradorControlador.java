@@ -138,5 +138,31 @@ public class AdministradorControlador {
     }
 
 
+    @GetMapping("/generarPDF")
+    public String mostrarEleccionesFinalizadas(Model model) {
+        List<Eleccion> eleccionesFinalizadas = eleccionServicio.obtenerEleccionesFinalizadas();
+        model.addAttribute("elecciones", eleccionesFinalizadas);
+        return "generarPDF"; // Asegúrate de tener generarPDF.html en templates
+    }
 
+    @GetMapping("/generarPDF/{eleccionId}")
+    public ResponseEntity<byte[]> generarPDF(@PathVariable Long eleccionId) {
+        byte[] contenidoPDF = votoServicio.generarReportePDF(eleccionId);
+
+        Eleccion eleccion = eleccionServicio.obtenerEleccionPorId(eleccionId);
+        if (eleccion == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        String nombreArchivo = eleccion.getNombre().replaceAll("\\s+", "_") + ".pdf";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        // Configura el encabezado para la descarga del archivo
+        headers.setContentDispositionFormData(nombreArchivo, nombreArchivo);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(contenidoPDF);
+    }
 }

@@ -11,8 +11,6 @@
     <style>
         /* Estilos Generales */
 
-
-
         * {
             box-sizing: border-box;
             margin: 0;
@@ -36,13 +34,37 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
-            position: relative;
+            position: relative; /* Necesario para posicionamiento absoluto del botón */
+        }
+
+        /* Botón de Salir */
+        .login-container .btn-salir {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: transparent;
+            border: none;
+            color: #00796b; /* Azul oscuro */
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-container .btn-salir i {
+            margin-right: 5px;
+            font-size: 18px;
+        }
+
+        .login-container .btn-salir:hover {
+            color: #0e574e; /* Azul más oscuro al pasar el cursor */
         }
 
         /* Logo o Título */
         .login-container .logo {
             text-align: center;
             margin-bottom: 30px;
+            margin-top: 10px; /* Espacio para el botón de salir */
         }
 
         .login-container .logo a {
@@ -83,7 +105,7 @@
         .login-container form .form-group input:focus {
             border-color: #00796b; /* Azul claro */
             outline: none;
-            box-shadow: 0 0 5px rgba(111, 177, 252, 0.5);
+            box-shadow: 0 0 5px rgb(14, 87, 78);
         }
 
         /* Botón de Envío */
@@ -107,7 +129,7 @@
         }
 
         .login-container form .btn-submit:hover {
-            background-color: #4364F7; /* Azul oscuro */
+            background-color: #0e574e; /* Azul oscuro */
             transform: translateY(-2px);
         }
 
@@ -151,6 +173,11 @@
 </head>
 <body>
 <div class="login-container">
+    <!-- Botón de Salir -->
+    <button type="button" class="btn-salir" onclick="window.location.href='/'">
+        <i class="fas fa-sign-out-alt"></i> Salir
+    </button>
+
     <!-- Logo o Título -->
     <div class="logo">
         <a href="#">VOTO SMART</a>

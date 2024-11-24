@@ -100,7 +100,8 @@
             <td th:text="${eleccion.nombre}"></td>
             <td th:text="${eleccion.descripcion}"></td>
             <td>
-                <a th:href="@{/generarPDF/{id}(id=${eleccion.id})}" class="btn-generate">Generar PDF</a>
+                <a th:href="@{/generarPDF/{eleccionId}(eleccionId=${eleccion.id})}" class="btn-generate">Generar PDF</a>
+
             </td>
         </tr>
         </tbody>

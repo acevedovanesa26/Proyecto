@@ -22,5 +22,7 @@ public interface VotoRepositorio extends JpaRepository<Voto, Long> {
 
     @Query(value = "SELECT COUNT(v.id) FROM voto v WHERE v.candidato_id = 0 AND v.eleccion_id = :eleccionId", nativeQuery = true)
     Long contarVotosEnBlanco(@Param("eleccionId") Long eleccionId);
+
+
 }
 

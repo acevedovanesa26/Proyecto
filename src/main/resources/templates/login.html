@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>VOTO SMART - Iniciar Sesión</title>
+    <!-- Fuentes de Google -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Estilos CSS Integrados -->
+    <style>
+        /* Estilos Generales */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #00796b 0%, #00796b 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Contenedor del Formulario */
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            position: relative; /* Necesario para posicionamiento absoluto del botón */
+        }
+
+        /* Botón de Salir */
+        .login-container .btn-salir {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: transparent;
+            border: none;
+            color: #00796b; /* Azul oscuro */
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-container .btn-salir i {
+            margin-right: 5px;
+            font-size: 18px;
+        }
+
+        .login-container .btn-salir:hover {
+            color: #0e574e; /* Azul más oscuro al pasar el cursor */
+        }
+
+        /* Logo o Título */
+        .login-container .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 10px; /* Espacio para el botón de salir */
+        }
+
+        .login-container .logo a {
+            text-decoration: none;
+            color: #00796b; /* Azul oscuro */
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        /* Formulario */
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-container form .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .login-container form .form-group i {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #00796b; /* Azul oscuro */
+        }
+
+        .login-container form .form-group input {
+            width: 100%;
+            padding: 12px 12px 12px 45px;
+            border: 1px solid #cccccc;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .login-container form .form-group input:focus {
+            border-color: #00796b; /* Azul claro */
+            outline: none;
+            box-shadow: 0 0 5px rgb(14, 87, 78);
+        }
+
+        /* Botón de Envío */
+        .login-container form .btn-submit {
+            background-color: #00796b; /* Azul claro */
+            color: #ffffff;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container form .btn-submit i {
+            margin-right: 8px;
+            font-size: 20px;
+        }
+
+        .login-container form .btn-submit:hover {
+            background-color: #0e574e; /* Azul oscuro */
+            transform: translateY(-2px);
+        }
+
+        /* Mensajes de Error y Éxito */
+        .login-container .mensaje {
+            margin-top: 15px;
+            color: green;
+            text-align: center;
+        }
+
+        .login-container .error {
+            margin-top: 15px;
+            color: red;
+            text-align: center;
+        }
+
+        /* Pie de Página (Opcional) */
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #555555;
+        }
+
+        /* Responsividad */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .login-container .logo a {
+                font-size: 28px;
+            }
+
+            .login-container form .btn-submit {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <!-- Botón de Salir -->
+    <button type="button" class="btn-salir" onclick="window.location.href='/'">
+        <i class="fas fa-sign-out-alt"></i> Salir
+    </button>
+
+    <!-- Logo o Título -->
+    <div class="logo">
+        <a href="#">VOTO SMART</a>
+    </div>
+
+    <!-- Formulario de Login -->
+    <form th:action="@{login}" method="post">
+        <div class="form-group">
+            <i class="fas fa-user"></i>
+            <label for="username"></label><input type="text" id="username" name="username" placeholder="Nombre de Usuario" required />
+        </div>
+        <div class="form-group">
+            <i class="fas fa-lock"></i>
+            <label for="password"></label><input type="password" id="password" name="password" placeholder="Contraseña" required />
+        </div>
+        <button type="submit" class="btn-submit">
+            <i class="fas fa-sign-in-alt"></i>
+            Iniciar Sesión
+        </button>
+    </form>
+
+    <!-- Mensajes de Éxito o Error -->
+    <div th:if="${mensaje}" class="mensaje">
+        <p th:text="${mensaje}"></p>
+    </div>
+    <div th:if="${error}" class="error">
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Pie de Página Opcional -->
+    <div class="footer">
+        © 2024 VOTO SMART. Todos los derechos reservados.
+    </div>
+</div>
+</body>
+</html>

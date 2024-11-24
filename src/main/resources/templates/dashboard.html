@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>VOTO SMART - Dashboard</title>
+  <!-- Fuentes de Google -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Estilos CSS Integrados -->
+  <style>
+    /* Estilos Generales */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f4f8;
+      color: #333333;
+      box-sizing: border-box;
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 60px; /* Altura del footer */
+    }
+
+    /* Barra de Navegación Superior */
+    .navbar {
+      background-color: #00796b; /* Verde azulado */
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .navbar .navbar-brand {
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .navbar .nav-links a {
+      color: #ffffff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-size: 16px;
+      transition: color 0.3s;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar .nav-links a i {
+      margin-right: 5px;
+    }
+
+    .navbar .nav-links a:hover {
+      color: #d1e7dd; /* Verde claro al pasar el cursor */
+    }
+
+    /* Contenido Principal */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    .main-content h1 {
+      color: #00796b;
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .main-content p {
+      color: #555555;
+      font-size: 18px;
+      margin-bottom: 30px;
+      max-width: 700px;
+    }
+
+    /* Contenedor de Botones */
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .button-container .btn {
+      background-color: #00796b;
+      color: #ffffff;
+      padding: 15px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 16px;
+      transition: background-color 0.3s, transform 0.3s;
+      min-width: 220px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button-container .btn i {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+
+    .button-container .btn:hover {
+      background-color: #005a4d;
+      transform: translateY(-3px);
+    }
+
+    /* Pie de Página Fijo */
+    .footer {
+      background-color: #00796b;
+      color: #ffffff;
+      text-align: center;
+      padding: 15px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Responsividad */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .navbar .nav-links {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .navbar .nav-links a {
+        margin: 10px 0;
+      }
+
+      .button-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .button-container .btn {
+        width: 80%;
+        max-width: 300px;
+      }
+
+      .main-content p {
+        padding: 0 10px;
+      }
+    }
+
+    /* Estilos Adicionales para Mejora Visual */
+    .btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300%;
+      height: 300%;
+      background-color: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: transform 0.5s ease;
+    }
+
+    .btn:hover::after {
+      transform: translate(-50%, -50%) scale(1);
+    }
+  </style>
+</head>
+<body>
+<!-- Barra de navegación superior -->
+<nav class="navbar">
+  <div class="logo">
+    <a href="#" class="navbar-brand">VOTO SMART</a>
+  </div>
+  <div class="nav-links">
+    <a th:href="@{/cambiar-contraseña}"><i class="fas fa-key"></i> Cambiar Contraseña</a>
+    <a th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+
+  </div>
+</nav>
+
+<!-- Contenido principal del dashboard -->
+<div class="main-content">
+  <h1>Bienvenido, <span th:text="${username}">Administrador</span>!</h1>
+  <p>Gestiona las elecciones, votantes, candidatos y más desde aquí.</p>
+  <div class="button-container">
+    <a th:href="@{/eleccion/listar}" class="btn">
+      <i class="fas fa-calendar-alt"></i>
+      Gestionar Elecciones
+    </a>
+    <a th:href="@{/candidato/listar}" class="btn">
+      <i class="fas fa-user-tie"></i>
+      Gestionar Candidatos
+    </a>
+    <a th:href="@{/resultados}" class="btn">
+      <i class="fas fa-chart-line"></i>
+      Ver Votos en Tiempo Real
+    </a>
+    <a th:href="@{/generarPDF}" class="btn">
+      <i class="fas fa-file-pdf"></i>
+      Generar PDF al Finalizar Elección
+    </a>
+  </div>
+</div>
+<!-- Pie de página fijo -->
+<footer class="footer">
+  &copy; 2024 VOTO SMART. Todos los derechos reservados.
+</footer>
+</body>
+</html>

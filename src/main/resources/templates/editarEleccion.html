@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Elección - VOTO SMART</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #00796b;
+            margin-bottom: 25px;
+            font-size: 2em;
+            letter-spacing: 1.2px;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #00796b;
+            color: #ffffff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #005a4d;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin: 15px 0 5px;
+            text-align: left;
+        }
+
+        input[type="text"], input[type="datetime-local"], input[type="number"], textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        button, a {
+            padding: 12px 20px;
+            background-color: #00796b;
+            color: #ffffff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover, a:hover {
+            background-color: #005a4d;
+        }
+
+        .btn-cancel {
+            background-color: #b0bec5;
+        }
+
+        .btn-cancel:hover {
+            background-color: #8a9ca6;
+        }
+
+        .error-message {
+            color: #d9534f;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+    </style>
+    <script>
+        function validarFechas() {
+            const fechaInicio = document.getElementById("fechaInicio").value;
+            const fechaFin = document.getElementById("fechaFin").value;
+            const mensajeError = document.getElementById("mensajeError");
+
+            // Limpia el mensaje de error
+            mensajeError.innerHTML = "";
+
+            if (new Date(fechaInicio) >= new Date(fechaFin)) {
+                mensajeError.innerHTML = "La fecha de inicio debe ser anterior a la fecha de fin. Por favor, corrige las fechas.";
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+<div class="form-container">
+    <a href="/eleccion/listar" class="back-button">Volver a Listado de Elecciones</a>
+
+    <h1>Editar Elección</h1>
+
+    <form th:action="@{/eleccion/actualizar}" th:object="${eleccion}" method="post" onsubmit="return validarFechas()">
+        <input type="hidden" th:field="*{id}"/>
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" th:field="*{nombre}" id="nombre" required/>
+
+        <label for="descripcion">Descripción:</label>
+        <textarea th:field="*{descripcion}" id="descripcion" required></textarea>
+
+        <label for="fechaInicio">Fecha Inicio:</label>
+        <input type="datetime-local" th:field="*{fechaInicio}" id="fechaInicio" required/>
+
+        <label for="fechaFin">Fecha Fin:</label>
+        <input type="datetime-local" th:field="*{fechaFin}" id="fechaFin" required/>
+
+        <label for="maxCandidatos">Máximo de Candidatos:</label>
+        <input type="number" th:field="*{maxCandidatos}" id="maxCandidatos" min="1" max="5" required/>
+
+        <div class="button-container">
+            <button type="submit">Guardar Cambios</button>
+            <a href="/eleccion/listar" class="btn-cancel">Cancelar</a>
+        </div>
+    </form>
+
+    <!-- Mensaje de error para fechas -->
+    <div id="mensajeError" class="error-message"></div>
+
+    <div th:if="${error}" class="error-message">
+        <p th:text="${error}"></p>
+    </div>
+</div>
+</body>
+</html>

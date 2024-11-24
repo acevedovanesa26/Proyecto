@@ -20,7 +20,11 @@ public class VotosSmartApplication {
 	}
 
 	public static void main(String[] args) {
-		Dotenv dotenv = Dotenv.load();
+		Dotenv dotenv = Dotenv.configure()
+				.directory(System.getProperty("user.dir")) // Configura el directorio actual
+				.filename(".env") // Asegúrate de que sea el nombre correcto
+				.load();
+
 		System.setProperty("URLBD", dotenv.get("URLBD"));
 		System.setProperty("USERNAMEBD", dotenv.get("USERNAMEBD"));
 		System.setProperty("PASSWORDBD", dotenv.get("PASSWORDBD"));
@@ -36,7 +40,6 @@ public class VotosSmartApplication {
 		};
 	}
 
-
 	@Configuration
 	public class WebConfig implements WebMvcConfigurer {
 
@@ -46,4 +49,6 @@ public class VotosSmartApplication {
 					.addResourceLocations("file:uploads/");
 		}
 	}
+
+
 }

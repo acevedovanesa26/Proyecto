@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Login de Votante - VOTO SMART</title>
+    <!-- Fuentes y estilos -->
     <link href="https://fonts.googleapis.com/css?family=Poppins:400,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -15,6 +16,26 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            position: relative; /* Permite posicionamiento absoluto */
+        }
+
+        /* Estilos para el botón "Salir" */
+        .btn-exit {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #d32f2f; /* Rojo */
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-exit:hover {
+            background-color: #b71c1c; /* Rojo más oscuro al pasar el cursor */
         }
 
         .form-container {
@@ -83,12 +104,12 @@
         }
 
         .mensaje.error {
-            //background-color: #f8d7da;
+            /* color de error */
             color: #721c24;
         }
 
         .mensaje.success {
-            //background-color: #d4edda;
+            /* color de éxito */
             color: #155724;
         }
 
@@ -110,6 +131,9 @@
     </style>
 </head>
 <body>
+<!-- Botón "Salir" en la esquina superior izquierda -->
+<a th:href="@{/}" class="btn-exit">Salir</a>
+
 <div class="form-container">
     <h2>Autenticación de Votante</h2>
 
@@ -117,7 +141,7 @@
     <div th:if="${success}" class="mensaje success" th:text="${success}"></div>
 
     <form th:action="@{/votante/login}" method="post">
-    <div class="form-group">
+        <div class="form-group">
             <label for="codigoAleatorio">Código Aleatorio</label>
             <input type="text" id="codigoAleatorio" name="codigoAleatorio" placeholder="Ingresa tu código aleatorio" required>
         </div>

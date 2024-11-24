@@ -14,6 +14,7 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            position: relative; /* Permite posicionamiento absoluto */
         }
 
         .container {
@@ -24,8 +25,45 @@
             width: 95%;
             max-width: 1200px;
             text-align: center;
+            position: relative;
         }
 
+        /* Estilos para los botones "Volver" y "Salir" */
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .top-buttons a {
+            display: inline-block;
+            padding: 10px 15px;
+            color: #ffffff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-back {
+            background-color: #00796b; /* Verde */
+        }
+
+        .btn-back:hover {
+            background-color: #005a4d;
+        }
+
+        .btn-exit {
+            background-color: #d32f2f; /* Rojo */
+        }
+
+        .btn-exit:hover {
+            background-color: #b71c1c;
+        }
+
+        /* Resto de tus estilos existentes */
         h1 {
             color: #00796b;
             font-size: 2.5em;
@@ -36,11 +74,28 @@
             background-color: #ffdddd;
             border: 2px solid #ff5c5c;
             color: #d32f2f;
-            font-size: 2em;
+            font-size: 1.5em;
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 30px;
             font-weight: bold;
+        }
+
+        .btn-logout {
+            display: inline-block;
+            padding: 15px 25px;
+            background-color: #00796b;
+            color: #ffffff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-logout:hover {
+            background-color: #005a4d;
         }
 
         .candidate-list {
@@ -123,11 +178,21 @@
     </style>
 </head>
 <body>
+<!-- Contenedor para los botones "Volver" y "Salir" -->
+<div class="top-buttons">
+    <a th:href="@{/votante/elecciones}" class="btn-back">Volver</a>
+    <a th:href="@{/votante/login}" class="btn-exit">Salir</a>
+</div>
+
 <div class="container">
     <h1>Candidatos para Votar</h1>
 
     <!-- Mostrar mensaje de error si el votante ya ha votado -->
-    <div th:if="${error}" class="error-message" th:text="${error}">Ya has votado en esta elección</div>
+    <div th:if="${error}" class="error-message">
+        <p th:text="${error}">Ya has votado en esta elección</p>
+        <!-- Si deseas, puedes eliminar el botón "Salir" aquí para evitar duplicación -->
+        <!-- <a th:href="@{/votante/login}" class="btn-logout">Salir</a> -->
+    </div>
 
     <!-- Mostrar lista de candidatos y voto en blanco solo si no hay error -->
     <div th:if="${error == null}">

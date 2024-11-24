@@ -14,6 +14,7 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            position: relative; /* Permite posicionamiento absoluto */
         }
 
         .container {
@@ -88,9 +89,50 @@
         .btn-view:hover {
             background-color: #005a4d;
         }
+
+        /* Estilos para los botones "Volver" y "Salir" */
+        .top-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .top-buttons a {
+            display: inline-block;
+            padding: 10px 15px;
+            color: #ffffff;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-back {
+            background-color: #00796b; /* Verde */
+        }
+
+        .btn-back:hover {
+            background-color: #005a4d;
+        }
+
+        .btn-exit {
+            background-color: #d32f2f; /* Rojo */
+        }
+
+        .btn-exit:hover {
+            background-color: #b71c1c;
+        }
     </style>
 </head>
 <body>
+<!-- Contenedor para los botones "Volver" y "Salir" -->
+<div class="top-buttons">
+    <a th:href="@{/votante/login}" class="btn-back">Volver</a>
+    <a th:href="@{/}" class="btn-exit">Salir</a>
+</div>
+
 <div class="container">
     <h1>Bienvenido/a</h1>
 

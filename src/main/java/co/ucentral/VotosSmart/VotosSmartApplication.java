@@ -20,16 +20,34 @@ public class VotosSmartApplication {
 	}
 
 	public static void main(String[] args) {
-		Dotenv dotenv = Dotenv.configure()
-				.directory(System.getProperty("user.dir")) // Configura el directorio actual
-				.filename(".env") // Asegúrate de que sea el nombre correcto
-				.load();
+		try {
+			// Intenta cargar el archivo .env desde el classpath EN ESTA MONDA
+			Dotenv dotenv = Dotenv.configure()
+					.directory("target/classes") // Ruta al classpath
+					.filename(".env")
+					.ignoreIfMalformed()
+					.ignoreIfMissing()
+					.load();
 
-		System.setProperty("URLBD", dotenv.get("URLBD"));
-		System.setProperty("USERNAMEBD", dotenv.get("USERNAMEBD"));
-		System.setProperty("PASSWORDBD", dotenv.get("PASSWORDBD"));
-		System.setProperty("ADMIN_USERNAME", dotenv.get("ADMIN_USERNAME"));
-		System.setProperty("ADMIN_PASSWORD", dotenv.get("ADMIN_PASSWORD"));
+			String urlBd = dotenv.get("URLBD", "jdbc:postgresql://localhost:5432/defaultdb");
+			String usernameBd = dotenv.get("USERNAMEBD", "defaultuser");
+			String passwordBd = dotenv.get("PASSWORDBD", "defaultpass");
+			String adminUsername = dotenv.get("ADMIN_USERNAME", "admin");
+			String adminPassword = dotenv.get("ADMIN_PASSWORD", "admin");
+
+			System.setProperty("URLBD", urlBd);
+			System.setProperty("USERNAMEBD", usernameBd);
+			System.setProperty("PASSWORDBD", passwordBd);
+			System.setProperty("ADMIN_USERNAME", adminUsername);
+			System.setProperty("ADMIN_PASSWORD", adminPassword);
+
+			System.out.println("Archivo .env cargado correctamente.");
+		} catch (Exception e) {
+			System.err.println("Error al cargar el archivo .env: " + e.getMessage());
+			e.printStackTrace();
+			System.exit(1);
+		}
+
 		SpringApplication.run(VotosSmartApplication.class, args);
 	}
 
@@ -49,6 +67,4 @@ public class VotosSmartApplication {
 					.addResourceLocations("file:uploads/");
 		}
 	}
-
-
 }

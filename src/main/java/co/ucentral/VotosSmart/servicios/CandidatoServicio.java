@@ -23,7 +23,7 @@ public class CandidatoServicio {
 
     private final CandidatoRepositorio candidatoRepositorio;
     private final EleccionRepositorio eleccionRepositorio;
-    private static final String IMAGENES_DIR = "src/main/resources/static/imagenes/";
+    private static final String IMAGENES_DIR = "./imagenes/";
 
     public void guardarCandidato(Candidato candidato, MultipartFile imagen) {
         if (imagen != null && !imagen.isEmpty()) {
@@ -35,8 +35,14 @@ public class CandidatoServicio {
 
     private String guardarImagen(MultipartFile imagen) {
         try {
+            // Crear el directorio si no existe
+            Path directorioImagenes = Paths.get(IMAGENES_DIR);
+            if (!Files.exists(directorioImagenes)) {
+                Files.createDirectories(directorioImagenes);
+            }
+
             String nombreArchivo = System.currentTimeMillis() + "_" + imagen.getOriginalFilename();
-            Path rutaArchivo = Paths.get(IMAGENES_DIR, nombreArchivo);
+            Path rutaArchivo = directorioImagenes.resolve(nombreArchivo);
             Files.copy(imagen.getInputStream(), rutaArchivo);
             return nombreArchivo;
         } catch (IOException e) {
@@ -72,8 +78,6 @@ public class CandidatoServicio {
         }
     }
 
-
-
     public List<Eleccion> obtenerEleccionesPendientes() {
         return eleccionRepositorio.findAll().stream()
                 .filter(e -> e.getFechaInicio().after(new Date()))
@@ -84,3 +88,4 @@ public class CandidatoServicio {
         return candidatoRepositorio.findByEleccionId(eleccionId);
     }
 }
+

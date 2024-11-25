@@ -63,6 +63,11 @@ public class VotosSmartApplication {
 
 		@Override
 		public void addResourceHandlers(ResourceHandlerRegistry registry) {
+			// Manejador para las imágenes
+			registry.addResourceHandler("/imagenes/**")
+					.addResourceLocations("file:./imagenes/");
+
+			// Manejador para otras rutas estáticas, si ya está configurado
 			registry.addResourceHandler("/uploads/**")
 					.addResourceLocations("file:uploads/");
 		}
